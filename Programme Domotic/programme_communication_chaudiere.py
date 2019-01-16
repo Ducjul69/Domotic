@@ -13,8 +13,6 @@ def communication_esp_chaudiere():
     ws.connect("ws://192.168.1.101/")
     ws.send(etat_chaudiere_old)
     result = ws.recv()
-    print(result)
-    print (etat_chaudiere_old)
     ws.close()
         
 
@@ -31,7 +29,6 @@ def changement_etat():
         if etat_chaudiere_old != etat_chaudiere_new:
             etat_chaudiere_old = etat_chaudiere_new
             communication_esp_chaudiere()
-            print("com")
         time.sleep(1)
         
 ############################################
