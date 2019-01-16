@@ -15,8 +15,8 @@ def communication_esp_chaudiere():
         ws.send(etat_chaudiere_old)
         result = ws.recv()
         ws.close()
-     except:
-         erreur_chaudiere=1
+    except:
+        erreur_chaudiere=1
 
 
 ############################################
