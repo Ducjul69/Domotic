@@ -8,13 +8,15 @@ from programme_outil_db import*
 ############################################
 def communication_esp_chaudiere():
     global etat_chaudiere_old
-    #connection à l'esp8266 chaudiere
-    ws = websocket.WebSocket()
-    ws.connect("ws://192.168.1.101/")
-    ws.send(etat_chaudiere_old)
-    result = ws.recv()
-    ws.close()
-        
+    try:
+        #connection à l'esp8266 chaudiere
+        ws = websocket.WebSocket()
+        ws.connect("ws://192.168.1.101/")
+        ws.send(etat_chaudiere_old)
+        result = ws.recv()
+        ws.close()
+     except:
+         erreur_chaudiere=1
 
 
 ############################################

@@ -16,6 +16,7 @@ from programme_outil_db import*
 def planning_comptage():
     global localdate, labeltps1
     while 1:
+        try:
             maintenant = datetime.now()
             tpsh = maintenant.hour
             strtpsh = str(tpsh)
@@ -26,7 +27,8 @@ def planning_comptage():
             localdate = strtpsh+":"+strtpsm+":"+strtpss
             labeltps1.configure(text= localdate)
             time.sleep(1)
-
+        except:
+            error=1
 ###########################################
 # recuperation
 def recup(jour):
@@ -308,12 +310,12 @@ def semaine():
 ############################################
 #fermeture de la fenetre suite appui bouton
 def planning_fermer():
-    global fenetre_planning
+    global fenetre_planning,tplanning
     #mise à jour de la base
+    tplanning.atuer =True
     variable_input = "fermeture"
     variable_etat = 1
     update_db(variable_input, variable_etat)
-    print("fermeture")
     fenetre_planning.destroy()
     
 ############################################
@@ -413,7 +415,7 @@ def planning_valider():
 
 def ouverture_planning():
 
-    global labeltps1,bouton_activer,fenetre_planning,list_check,var_check,bouton_lundi,bouton_mardi,bouton_mercredi,bouton_jeudi,bouton_vendredi,bouton_semaine,bouton_samedi,bouton_dimanche
+    global tplanning,labeltps1,bouton_activer,fenetre_planning,list_check,var_check,bouton_lundi,bouton_mardi,bouton_mercredi,bouton_jeudi,bouton_vendredi,bouton_semaine,bouton_samedi,bouton_dimanche
 
     #lecture de l'ancienne valeur depuis db
     variable_input = "mode_planning"
