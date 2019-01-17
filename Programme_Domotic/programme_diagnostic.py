@@ -27,8 +27,8 @@ def heure():
                 labeltps1.configure(text= localdate)
                 time.sleep(1)
             except:
-                #arret thread heure
-                tplanning.atuer=True
+                break
+                
 ############################################
 
 
@@ -186,11 +186,13 @@ def start_diagnostic_thread():
 ############################################
 #fermeture de la fenetre suite appui bouton
 def diagnostic_fermer():
-    global fenetre_diag
+    global fenetre_diag,tplanning
     #mise a jour de la base
     variable_input = "fermeture"
     variable_etat = 1
     update_db(variable_input, variable_etat)
+    #arret thread heure
+    tplanning.atuer=True
     fenetre_diag.destroy()
 
     

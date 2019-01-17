@@ -29,6 +29,7 @@ def planning_comptage():
             labeltps1.configure(text= localdate)
             time.sleep(1)
         except:
+            break
             error=1
 ###########################################
 # recuperation
@@ -312,11 +313,12 @@ def semaine():
 #fermeture de la fenetre suite appui bouton
 def planning_fermer():
     global fenetre_planning,tplanning
-    #mise a jour de la base
-    tplanning.atuer =True
+    #mise a jour de la base   
     variable_input = "fermeture"
     variable_etat = 1
     update_db(variable_input, variable_etat)
+    #arrêt du thread
+    tplanning.atuer =True
     fenetre_planning.destroy()
     
 ############################################
