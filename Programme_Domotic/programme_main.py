@@ -387,6 +387,10 @@ bouton_diagnostic = Button(frame_inf, text="Diagnostics", command=diagnostics,he
 bouton_diagnostic.config(font=("Courier", 11))
 bouton_diagnostic.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 
+#BP reco temp int
+bouton_diagnostic = Button(frame_inf, text="Co Temp Int", command=com_esp_temperature,height = 2,width = 11)
+bouton_diagnostic.config(font=("Courier", 11))
+bouton_diagnostic.grid(row=1, column=1,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 
 
 
