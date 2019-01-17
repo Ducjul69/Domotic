@@ -3,6 +3,9 @@
 import websocket
 import time
 import threading
+from tkinter import messagebox
+
+
 from programme_outil_db import*
 
 ############################################
@@ -37,6 +40,7 @@ def communication_esp_temperature():
         ws.close()
         
     except:
+        messagebox.showinfo("Erreur", "Erreur communication temperature interieure")
         #chargement dans la base
         variable_input = "hygrometrie_interieur"
         variable_etat = 0

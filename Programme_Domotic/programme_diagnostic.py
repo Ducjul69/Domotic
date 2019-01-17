@@ -1,6 +1,6 @@
 #!/usr/bin/env /usr/bin/python
 
-from Tkinter import *
+from tkinter import *
 import os
 import websocket
 import time
@@ -212,9 +212,8 @@ def fenetre_diagnostic():
     # calculate x and y coordinates for the Tk root window
     x = (800/2) - (800/2)
     y = (410/2) - (440/2)
-    ws = fenetre_diag.winfo_screenwidth() # width of the screen
-    hs = fenetre_diag.winfo_screenheight() # height of the screen
-    fenetre_diag.geometry('%dx%d+%d+%d' % (ws, hs, x, y))
+
+    fenetre_diag.geometry('%dx%d+%d+%d' % (800, 400, x, y))
 
     #entete
     entete = Frame(fenetre_diag, bg='grey', height=50)

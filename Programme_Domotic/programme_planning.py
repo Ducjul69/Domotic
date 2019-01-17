@@ -1,7 +1,7 @@
 #!/usr/bin/env /usr/bin/python
 # coding: utf-8
 
-from Tkinter import *
+from tkinter import *
 import os
 import time
 import threading
@@ -38,7 +38,7 @@ def recup(jour):
     if jour ==1:
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Lundi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -52,7 +52,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Mardi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -66,7 +66,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Mercredi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -80,7 +80,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Jeudi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -94,7 +94,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Vendredi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -108,7 +108,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Samedi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -122,7 +122,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Dimanche FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -136,7 +136,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Semaine FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -334,14 +334,14 @@ def planning_enregistrement():
     if njour==1:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Lundi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==2:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Mardi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
@@ -355,35 +355,35 @@ def planning_enregistrement():
     if njour==4:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Jeudi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==5:
         for i in range(0,25):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Vendredi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==6:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Samedi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==7:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Dimanche = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==8:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('/home/pi/Desktop/Programme_Domotic/domotic.db') as co_db:
+            with sqlite3.connect('domotic.db') as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Semaine = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()            
@@ -438,9 +438,7 @@ def ouverture_planning():
     # calculate x and y coordinates for the Tk root window
     x = (800/2) - (800/2)
     y = (410/2) - (440/2)
-    ws = fenetre_planning.winfo_screenwidth() # width of the screen
-    hs = fenetre_planning.winfo_screenheight() # height of the screen
-    fenetre_planning.geometry('%dx%d+%d+%d' % (ws, hs, x, y))
+    fenetre_planning.geometry('%dx%d+%d+%d' % (800,400, x, y))
 
 
     #entete

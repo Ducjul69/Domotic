@@ -3,7 +3,7 @@
 # coding: utf-8
 
 
-from Tkinter import *
+from tkinter import *
 import os
 import time
 import threading
@@ -21,6 +21,7 @@ from programme_diagnostic import*
 from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
 from programme_IO_adafruit import*
+from programme_graphique_heure import*
 
 
 ###########################################
@@ -175,21 +176,21 @@ def ecriture_etat_chaudiere():
 
     if mode_de_marche ==0:
         #modification de l'image
-        photo5=PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_off.png")
+        photo5=PhotoImage(file="chaudiere_off.png")
         canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Aucun mode \n selectionn"+u"\u00E9")
             
     elif mode_de_marche ==1:
         #modification de l'image
-        photo5=PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_on.png")
+        photo5=PhotoImage(file="chaudiere_on.png")
         canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Mode manuel")
             
     elif mode_de_marche ==2:
         #modification de l'image
-        photo5=PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_on.png")
+        photo5=PhotoImage(file="chaudiere_on.png")
         canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Mode \n automatique")
@@ -201,13 +202,13 @@ def ecriture_etat_chaudiere():
         etat_chaudiere= lecture_db(variable_input)
         if etat_chaudiere == 1:
             #modification de l'image
-            photo5=PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_on.png")
+            photo5=PhotoImage(file="chaudiere_on.png")
             canvas5.itemconfig(item,image = photo5)
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
         else:
             #modification de l'image
-            photo5=PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_off.png")
+            photo5=PhotoImage(file="chaudiere_off.png")
             canvas5.itemconfig(item,image = photo5)
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
@@ -229,9 +230,7 @@ fenetre.resizable(width=FALSE, height=FALSE)
 # calculate x and y coordinates for the Tk root window
 x = (800/2) - (800/2)
 y = (410/2) - (440/2)
-ws = fenetre.winfo_screenwidth() # width of the screen
-hs = fenetre.winfo_screenheight() # height of the screen
-fenetre.geometry('%dx%d+%d+%d' % (ws, hs, x, y))
+fenetre.geometry('%dx%d+%d+%d' % (800, 400, x, y))
 
 #entete
 entete = Frame(fenetre, bg='grey', height=50)
@@ -284,7 +283,7 @@ label = Label(temp_ext,text="Temp"+u"\u00E9"+"rature \n ext"+u"\u00E9"+"rieure",
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="e")
 #image frame
-photo1 = PhotoImage(file="/home/pi/Desktop/Programme_Domotic/Thermo1.png")
+photo1 = PhotoImage(file="Thermo1.png")
 canvas1 = Canvas(temp_ext,width=photo1.width(), height=photo1.height(),bg = "white",highlightthickness=0)
 canvas1.create_image(40, 70, image=photo1)
 canvas1.grid(row=0, column=0,rowspan=2, sticky="nsew")
@@ -299,7 +298,7 @@ label = Label(hydro_ext,text="Hygrom"+u"\u00E9"+"trie \n ext"+u"\u00E9"+"rieure"
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo2 = PhotoImage(file="/home/pi/Desktop/Programme_Domotic/Hygro.png")
+photo2 = PhotoImage(file="Hygro.png")
 canvas2 = Canvas(hydro_ext,width=photo2.width(), height=130,bg = "white",highlightthickness=0)
 canvas2.create_image(40,60, image=photo2)
 canvas2.grid(row=0, column=0,rowspan=2, sticky="nsew")
@@ -314,7 +313,7 @@ label = Label(temp_int,text="Temp"+u"\u00E9"+"rature \n int"+u"\u00E9"+"rieure",
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo = PhotoImage(file="/home/pi/Desktop/Programme_Domotic/Thermo1.png")
+photo = PhotoImage(file="Thermo1.png")
 canvas = Canvas(temp_int,width=photo.width(), height=photo.height(),bg = "white",highlightthickness=0)
 canvas.create_image(40, 70, image=photo)
 canvas.grid(row=0, column=0,rowspan =2, sticky="nsew")
@@ -329,7 +328,7 @@ label = Label(hydro_int,text="Hygrom"+u"\u00E9"+"trie \n  int"+u"\u00E9"+"rieure
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo4 = PhotoImage(file="/home/pi/Desktop/Programme_Domotic/Hygro.png")
+photo4 = PhotoImage(file="Hygro.png")
 canvas4 = Canvas(hydro_int,width=photo4.width(), height=130,bg = "white",highlightthickness=0)
 canvas4.create_image(40,60, image=photo4)
 canvas4.grid(row=0, column=0,rowspan=2, sticky="nsew")
@@ -345,7 +344,7 @@ label = Label(etat_chaudiere,text="Fonctionnement \n chaudi"+u"\u00E8"+"re",bg =
 label.config(font=("Courier", 14))
 label.grid(row=0, column=0,  columnspan=2, sticky="nsew")
 #image d'etat
-photo5 = PhotoImage(file="/home/pi/Desktop/Programme_Domotic/chaudiere_off.png")
+photo5 = PhotoImage(file="chaudiere_off.png")
 canvas5 = Canvas(etat_chaudiere,width=photo5.width(), height=85,bg = "white",highlightthickness=0)
 item=canvas5.create_image(45,42, image=photo5)
 canvas5.grid(row=1, column=0,rowspan=2, sticky="nsew")
@@ -421,6 +420,11 @@ com_esp_chaudiere()
 ############################################
 # demarrage communication avec temperature
 com_esp_temperature()
+############################################
+
+############################################
+# demarrage enregistrement des temperature
+Thread_remplissage_heure()
 ############################################
 
 fenetre.mainloop()
