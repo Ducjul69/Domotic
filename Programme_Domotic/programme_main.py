@@ -17,11 +17,12 @@ from programme_planning import*
 from programme_allumage_auto import*
 from programme_communication_chaudiere import*
 from programme_communication_temperature import*
+from programme_communication_temperature_ext import*
 from programme_diagnostic import*
 from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
 from programme_IO_adafruit import*
-from programme_graphique_heure import*
+from programme_graphique_temp import*
 
 
 ###########################################
@@ -149,6 +150,14 @@ def planning():
     fenetre.withdraw()
 
 ###########################################
+
+###########################################
+# affichage fenetre diagnostic
+def graph_temp():
+    fenetre_graphique()
+    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    t1.start()
+    fenetre.withdraw()
 
 
 ###########################################
@@ -392,6 +401,16 @@ bouton_diagnostic = Button(frame_inf, text="Co Temp Int", command=com_esp_temper
 bouton_diagnostic.config(font=("Courier", 11))
 bouton_diagnostic.grid(row=1, column=1,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 
+#BP reco temp int
+bouton_diagnostic = Button(frame_inf, text="Co Temp Ext", command=com_esp_temperature,height = 2,width = 11)
+bouton_diagnostic.config(font=("Courier", 11))
+bouton_diagnostic.grid(row=1, column=2,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+
+#BP reco temp int
+bouton_diagnostic = Button(frame_inf, text="Graph Temp", command=graph_temp,height = 2,width = 11)
+bouton_diagnostic.config(font=("Courier", 11))
+bouton_diagnostic.grid(row=1, column=3,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+
 
 
 
@@ -400,7 +419,6 @@ bouton_diagnostic.grid(row=1, column=1,  rowspan=1,  sticky="ns",pady = 4, padx 
 #affichage de l'historique planning
 #prise en compte des modification du planning
 #lecture de l'activation du mode planning
-
 
 ############################################
 # demarrage surveillance mode de marche
@@ -422,8 +440,13 @@ com_esp_chaudiere()
 ############################################
 
 ############################################
-# demarrage communication avec temperature
+# demarrage communication avec temperature int
 com_esp_temperature()
+############################################
+
+############################################
+# demarrage communication avec temperature int
+com_esp_temperature_ext()
 ############################################
 
 ############################################
