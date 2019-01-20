@@ -155,9 +155,11 @@ def planning():
 # affichage fenetre diagnostic
 def graph_temp():
     fenetre_graphique()
-    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
-    t1.start()
-    fenetre.withdraw()
+    #t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    #t1.start()
+    #fenetre.withdraw()
+    a=1
+
 
 
 ###########################################
@@ -238,8 +240,8 @@ fenetre.resizable(width=FALSE, height=FALSE)
 # get screen width and height
 # calculate x and y coordinates for the Tk root window
 x = (800/2) - (800/2)
-y = (410/2) - (440/2)
-fenetre.geometry('%dx%d+%d+%d' % (800, 400, x, y))
+y = (430/2) - (440/2)
+fenetre.geometry('%dx%d+%d+%d' % (800, 432, x, y))
 
 #entete
 entete = Frame(fenetre, bg='grey', height=50)
@@ -401,7 +403,7 @@ bouton_diagnostic = Button(frame_inf, text="Co Temp Int", command=com_esp_temper
 bouton_diagnostic.config(font=("Courier", 11))
 bouton_diagnostic.grid(row=1, column=1,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 
-#BP reco temp int
+#BP reco temp ext
 bouton_diagnostic = Button(frame_inf, text="Co Temp Ext", command=com_esp_temperature,height = 2,width = 11)
 bouton_diagnostic.config(font=("Courier", 11))
 bouton_diagnostic.grid(row=1, column=2,  rowspan=1,  sticky="ns",pady = 4, padx = 3)

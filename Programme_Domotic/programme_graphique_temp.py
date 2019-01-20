@@ -100,9 +100,9 @@ def fenetre_graphique():
     # get screen width and height
     # calculate x and y coordinates for the Tk root window
     x = (800/2) - (800/2)
-    y = (410/2) - (440/2)
+    y = (430/2) - (440/2)
 
-    fenetre_graph.geometry('%dx%d+%d+%d' % (800, 400, x, y))
+    fenetre_graph.geometry('%dx%d+%d+%d' % (800, 432, x, y))
 
     #entete
     entete = Frame(fenetre_graph, bg='grey', height=50)
@@ -160,7 +160,8 @@ def fenetre_graphique():
         
     fig = Figure(figsize=(11, 4), dpi=75)
     ax = fig.add_subplot(111)
-    ax.plot(range(24), list_temperature,list_temperature_ext)
+    ax.plot(range(24), list_temperature, marker="*", label="temperature interieur")
+    ax.plot(range(24), list_temperature_ext, marker="*", label="temperature extérieur")
  
     graph = FigureCanvasTkAgg(fig, master=visu)
     canvas = graph.get_tk_widget()

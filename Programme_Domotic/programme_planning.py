@@ -439,8 +439,8 @@ def ouverture_planning():
     # get screen width and height
     # calculate x and y coordinates for the Tk root window
     x = (800/2) - (800/2)
-    y = (410/2) - (440/2)
-    fenetre_planning.geometry('%dx%d+%d+%d' % (800,400, x, y))
+    y = (430/2) - (440/2)
+    fenetre_planning.geometry('%dx%d+%d+%d' % (800,432, x, y))
 
 
     #entete
