@@ -35,11 +35,13 @@ def planning_comptage():
 # recuperation
 def recup(jour):
     global list_check
+    chemin_base = os.getcwd()+"/domotic.db"
+    
     h=1
     if jour ==1:
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Lundi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -53,7 +55,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Mardi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -67,7 +69,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Mercredi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -81,7 +83,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Jeudi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -95,7 +97,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Vendredi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -109,7 +111,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Samedi FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -123,7 +125,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Dimanche FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -137,7 +139,7 @@ def recup(jour):
         h=1
         for i in list_check:
             
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""SELECT Semaine FROM Planning WHERE Heure=?""", (h,))
                 variable_output=(curseur.fetchone()[0])
@@ -328,7 +330,8 @@ def planning_fermer():
 #Enregistrement du planning
 def planning_enregistrement():
     global var_check
-
+    chemin_base = os.getcwd()+"/domotic.db"
+     
     variable_input = "planning_jour"
     lecture_db(variable_input)
     njour= lecture_db(variable_input)
@@ -336,56 +339,56 @@ def planning_enregistrement():
     if njour==1:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Lundi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==2:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Mardi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==3:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Mercredi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==4:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Jeudi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==5:
         for i in range(0,25):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Vendredi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==6:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Samedi = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==7:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Dimanche = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()
     if njour==8:
         for i in range(0,24):
             etat=var_check[i].get()
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Planning SET Semaine = ? WHERE Heure = ?""", (etat,i+1,))
             co_db.close()            

@@ -43,42 +43,45 @@ from programme_graphique_temp import*
 def MaJ_fenetre_main():
     global localdate
     while 1:
-        #mise a jour pour l'heure
-        #comptage(localdate)
-        heure =[]
-        heure= comptage()
-        localdate = heure
-        #mise a jour label heure
-        labeltps.configure(text = localdate)
+        try:
+            #mise a jour pour l'heure
+            #comptage(localdate)
+            heure =[]
+            heure= comptage()
+            localdate = heure
+            #mise a jour label heure
+            labeltps.configure(text = localdate)
 
-        #mise a jour des modes de marches
-        ecriture_etat_chaudiere()
+            #mise a jour des modes de marches
+            ecriture_etat_chaudiere()
 
-        #mise a jour des temperatures et hygro
-        variable_input = "temperature_exterieur"
-        lecture_db(variable_input)
-        temperature_exterieur= lecture_db(variable_input)
-        #label
-        temp_ext_label.configure(text = (str(temperature_exterieur) +u"\u00B0"+"C"))
-        
-        variable_input = "temperature_interieur"
-        lecture_db(variable_input)
-        temperature_interieur= lecture_db(variable_input)
-        #label
-        temp_int_label.configure(text = (str(temperature_interieur) +u"\u00B0"+"C"))
-        
-        variable_input = "hygrometrie_exterieur"
-        lecture_db(variable_input)
-        hygrometrie_exterieur= lecture_db(variable_input)
-        #label
-        hydro_ext_label.configure(text = (str(hygrometrie_exterieur) +" "+u"\u0025"))
-        
-        variable_input = "hygrometrie_interieur"
-        lecture_db(variable_input)
-        hygrometrie_interieur= lecture_db(variable_input)
-        #label
-        hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
-           
+            #mise a jour des temperatures et hygro
+            variable_input = "temperature_exterieur"
+            lecture_db(variable_input)
+            temperature_exterieur= lecture_db(variable_input)
+            #label
+            temp_ext_label.configure(text = (str(temperature_exterieur) +u"\u00B0"+"C"))
+            
+            variable_input = "temperature_interieur"
+            lecture_db(variable_input)
+            temperature_interieur= lecture_db(variable_input)
+            #label
+            temp_int_label.configure(text = (str(temperature_interieur) +u"\u00B0"+"C"))
+            
+            variable_input = "hygrometrie_exterieur"
+            lecture_db(variable_input)
+            hygrometrie_exterieur= lecture_db(variable_input)
+            #label
+            hydro_ext_label.configure(text = (str(hygrometrie_exterieur) +" "+u"\u0025"))
+            
+            variable_input = "hygrometrie_interieur"
+            lecture_db(variable_input)
+            hygrometrie_interieur= lecture_db(variable_input)
+            #label
+            hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
+
+        except:
+            break
 ###########################################
 # bouton allumage chaudiere en mode manu
 def allumage():
@@ -142,33 +145,37 @@ def scrutation_fermeture_fenetre():
 ###########################################
 # affichage du planning
 def planning():    
+    
+    #masquer la fenetre principale
+    fenetre.withdraw()
     #thread pour affichage planning
     ouverture_planning()
     t1 = threading.Thread(target=scrutation_fermeture_fenetre)
     t1.start()
-    #masquer la fenetre principale
-    fenetre.withdraw()
+    
+    
 
 ###########################################
 
 ###########################################
 # affichage fenetre diagnostic
 def graph_temp():
+    fenetre.withdraw()
     fenetre_graphique()
-    #t1 = threading.Thread(target=scrutation_fermeture_fenetre)
-    #t1.start()
-    #fenetre.withdraw()
-    a=1
+    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    t1.start()
+    
 
 
 
 ###########################################
 # affichage fenetre diagnostic
 def diagnostics():
+    fenetre.withdraw()
     programme_diag()
     t1 = threading.Thread(target=scrutation_fermeture_fenetre)
     t1.start()
-    fenetre.withdraw()
+    
 
 
 ###########################################
@@ -231,6 +238,7 @@ def ecriture_etat_chaudiere():
 
 tempint =10
 tempext =10
+chemin = os.getcwd()+"/"
 
 #fenetre principale
 fenetre = Tk()
@@ -294,13 +302,13 @@ label = Label(temp_ext,text="Temp"+u"\u00E9"+"rature \n ext"+u"\u00E9"+"rieure",
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="e")
 #image frame
-photo1 = PhotoImage(file="Thermo1.png")
+photo1 = PhotoImage(file=chemin+"Thermo1.png")
 canvas1 = Canvas(temp_ext,width=photo1.width(), height=photo1.height(),bg = "white",highlightthickness=0)
 canvas1.create_image(40, 70, image=photo1)
 canvas1.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
 temp_ext_label = Label(temp_ext,text="10"+u"\u00B0",bg = "white")
-temp_ext_label.config(font=("Courier", 30))
+temp_ext_label.config(font=("Courier", 35))
 temp_ext_label.grid(row=1, column=1, sticky="nsew")
 
 #2
@@ -309,13 +317,13 @@ label = Label(hydro_ext,text="Hygrom"+u"\u00E9"+"trie \n ext"+u"\u00E9"+"rieure"
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo2 = PhotoImage(file="Hygro.png")
+photo2 = PhotoImage(file=chemin+"Hygro.png")
 canvas2 = Canvas(hydro_ext,width=photo2.width(), height=130,bg = "white",highlightthickness=0)
 canvas2.create_image(40,60, image=photo2)
 canvas2.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
 hydro_ext_label = Label(hydro_ext,text="100%",bg = "white")
-hydro_ext_label.config(font=("Courier", 30))
+hydro_ext_label.config(font=("Courier", 35))
 hydro_ext_label.grid(row=1, column=1, sticky="nsew")
 
 #3
@@ -324,13 +332,13 @@ label = Label(temp_int,text="Temp"+u"\u00E9"+"rature \n int"+u"\u00E9"+"rieure",
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo = PhotoImage(file="Thermo1.png")
+photo = PhotoImage(file=chemin+"Thermo1.png")
 canvas = Canvas(temp_int,width=photo.width(), height=photo.height(),bg = "white",highlightthickness=0)
 canvas.create_image(40, 70, image=photo)
 canvas.grid(row=0, column=0,rowspan =2, sticky="nsew")
 #valeur frame
 temp_int_label = Label(temp_int,text="10"+u"\u00B0",bg = "white")
-temp_int_label.config(font=("Courier", 30))
+temp_int_label.config(font=("Courier", 35))
 temp_int_label.grid(row=1, column=1, sticky="nsew")
 
 #4
@@ -339,13 +347,13 @@ label = Label(hydro_int,text="Hygrom"+u"\u00E9"+"trie \n  int"+u"\u00E9"+"rieure
 label.config(font=("Courier", 14))
 label.grid(row=0, column=1,  columnspan=1, sticky="nsew")
 #image frame
-photo4 = PhotoImage(file="Hygro.png")
+photo4 = PhotoImage(file=chemin+"Hygro.png")
 canvas4 = Canvas(hydro_int,width=photo4.width(), height=130,bg = "white",highlightthickness=0)
 canvas4.create_image(40,60, image=photo4)
 canvas4.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
 hydro_int_label = Label(hydro_int,text="100%",bg = "white")
-hydro_int_label.config(font=("Courier", 30))
+hydro_int_label.config(font=("Courier", 35))
 hydro_int_label.grid(row=1, column=1, sticky="nsew")
 
 #5
@@ -355,7 +363,7 @@ label = Label(etat_chaudiere,text="Fonctionnement \n chaudi"+u"\u00E8"+"re",bg =
 label.config(font=("Courier", 14))
 label.grid(row=0, column=0,  columnspan=2, sticky="nsew")
 #image d'etat
-photo5 = PhotoImage(file="chaudiere_off.png")
+photo5 = PhotoImage(file=chemin+"chaudiere_off.png")
 canvas5 = Canvas(etat_chaudiere,width=photo5.width(), height=85,bg = "white",highlightthickness=0)
 item=canvas5.create_image(45,42, image=photo5)
 canvas5.grid(row=1, column=0,rowspan=2, sticky="nsew")

@@ -50,6 +50,7 @@ def graph_fermer():
 ############################
 #Remplissage de la base de donnees
 def remplisage_heure_bd ():
+    chemin_base = os.getcwd()+"/domotic.db"
     while 1:
         try:
             #lecture de la temperature
@@ -67,14 +68,14 @@ def remplisage_heure_bd ():
             lecture_db(variable_input)
             heure= lecture_db(variable_input)
             #remplissage de la bd
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
                 curseur.execute("""UPDATE Temperature SET temperature = ? WHERE heure = ?""", (temperature_interieur,heure,))
             co_db.close()
             heure = heure+100
-            with sqlite3.connect('domotic.db') as co_db:
+            with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
-                curseur.execute("""UPDATE Temperature SET temperature = ? WHERE heure = ?""", (temperature_interieur,heure,))
+                curseur.execute("""UPDATE Temperature SET temperature = ? WHERE heure = ?""", (temperature_exterieur,heure,))
             co_db.close()
 
         except:
@@ -91,6 +92,8 @@ def Thread_remplissage_heure ():
            
 ############################################
 def fenetre_graphique():
+    chemin_base = os.getcwd()+"/domotic.db"
+    
     global labeltps2, tplanning, fenetre_graph
     #fenetre principale
     fenetre_graph = Toplevel()
@@ -139,7 +142,7 @@ def fenetre_graphique():
     #list temperature interieur
     list_temperature = []
     for i in range (1,25):
-        with sqlite3.connect('domotic.db') as co_db:
+        with sqlite3.connect(chemin_base) as co_db:
             curseur = co_db.cursor()
             curseur.execute("""SELECT temperature FROM Temperature WHERE heure=?""", (i,))
             variable_output=(curseur.fetchone()[0])
@@ -149,7 +152,7 @@ def fenetre_graphique():
     #list temperature exterieur
     list_temperature_ext = []
     for i in range (101,125):
-        with sqlite3.connect('domotic.db') as co_db:
+        with sqlite3.connect(chemin_base) as co_db:
             curseur = co_db.cursor()
             curseur.execute("""SELECT temperature FROM Temperature WHERE heure=?""", (i,))
             variable_output=(curseur.fetchone()[0])
@@ -158,11 +161,12 @@ def fenetre_graphique():
 
         
         
-    fig = Figure(figsize=(11, 4), dpi=75)
+    fig = Figure(figsize=(10, 4), dpi=85)
     ax = fig.add_subplot(111)
     ax.plot(range(24), list_temperature, marker="*", label="temperature interieur")
     ax.plot(range(24), list_temperature_ext, marker="*", label="temperature extérieur")
- 
+    # Place a legend to the right of this smaller subplot.
+    ax.legend(bbox_to_anchor=(1.05, 1), loc='center right', borderaxespad=0.)
     graph = FigureCanvasTkAgg(fig, master=visu)
     canvas = graph.get_tk_widget()
     canvas.grid(row=0, column=0)
