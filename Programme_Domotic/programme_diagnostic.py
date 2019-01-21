@@ -8,6 +8,9 @@ import threading
 from datetime import datetime
 
 from programme_outil_db import*
+from programme_communication_chaudiere import*
+from programme_communication_temperature import*
+from programme_communication_temperature_ext import*
 
 
 ###########################################
@@ -280,39 +283,57 @@ def fenetre_diagnostic():
     
     ############################################
     #zone principale
-    label = Label(visu, text="Etat communication avec la chaudiere :", bg = "grey", fg = "white")
+    label = Label(visu, text="Etat communication avec la chaudiere :", bg = "grey", fg = "white", width=40)
     label.config(font=("Courier", 12))
-    label.grid(row=0, column=0,columnspan=1)
-    etat1 = Label(visu, text=etat_com_chaudiere, bg = "grey", fg = "white")
+    label.grid(row=0, column=0,  sticky="nsew")
+    etat1 = Label(visu, text=etat_com_chaudiere, bg = "grey", fg = "white", width=35)
     etat1.config(font=("Courier", 12))
-    etat1.grid(row=0, column=1,columnspan=1)
+    etat1.grid(row=0, column=1,columnspan=1,  sticky="nsew")
 
-    label = Label(visu, text="Etat communication capteur ext"+u"\u00E9"+"rieur :", bg = "grey", fg = "white")
+    label = Label(visu, text="Etat communication capteur ext"+u"\u00E9"+"rieur :", bg = "grey", fg = "white", width=40)
     label.config(font=("Courier", 12))
-    label.grid(row=1, column=0,columnspan=1)
-    etat2 = Label(visu, text=etat_com_ext, bg = "grey", fg = "white")
+    label.grid(row=1, column=0,  sticky="nsew")
+    etat2 = Label(visu, text=etat_com_ext, bg = "grey", fg = "white", width=35)
     etat2.config(font=("Courier", 12))
-    etat2.grid(row=1, column=1,columnspan=1)
+    etat2.grid(row=1, column=1,columnspan=1,  sticky="nsew")
     
-    label = Label(visu, text="Etat communication capteur int"+u"\u00E9"+"rieur :", bg = "grey", fg = "white")
+    label = Label(visu, text="Etat communication capteur int"+u"\u00E9"+"rieur :", bg = "grey", fg = "white", width=40)
     label.config(font=("Courier", 12))
-    label.grid(row=2, column=0,columnspan=1)
-    etat3 = Label(visu, text=etat_com_interieur, bg = "grey", fg = "white")
+    label.grid(row=2, column=0,  sticky="nsew")
+    etat3 = Label(visu, text=etat_com_interieur, bg = "grey", fg = "white", width=35)
     etat3.config(font=("Courier", 12))
-    etat3.grid(row=2, column=1,columnspan=1)
+    etat3.grid(row=2, column=1,columnspan=1,  sticky="nsew")
 
     #bouton de diagnostic
     bouton_fermeture = Button(visu, text="Mise a jour", command=start_diagnostic,width = 14)
     bouton_fermeture.config(font=("Courier", 14))
-    bouton_fermeture.grid(row=3, column=1,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
-    
+    bouton_fermeture.grid(row=3, column=0,  columnspan=2,  sticky="nsew",pady = 4, padx = 40)
 
+    
+    #frame dans visu
+    visu_int = Frame(visu, bg='grey',width = 799, height=150)
+    visu_int.grid(row=4, column=0,  columnspan=2, sticky="nsew",pady = 0, padx = 0)
+    #label
+    label = Label(visu_int, text="Tentative de reconnexion :", bg = "grey", fg = "white", width=30)
+    label.config(font=("Courier", 12))
+    label.grid(row=0, column=0,  sticky="nsew")
+    #BP reco temp int
+    bouton_diagnostic = Button(visu_int, text="Connexion\n Température interieure", command=com_esp_temperature,height = 2,width = 30)
+    bouton_diagnostic.config(font=("Courier", 11))
+    bouton_diagnostic.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+    #BP reco temp ext
+    bouton_diagnostic = Button(visu_int, text="Connexion\n Température exterieure", command=com_esp_temperature,height = 2,width = 30)
+    bouton_diagnostic.config(font=("Courier", 11))
+    bouton_diagnostic.grid(row=2, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+    
+    ###########################################
+    #zone BP bas
     #bouton de fermeture de la page
     bouton_fermeture = Button(bas_page, text="Retour", command=diagnostic_fermer,width = 11)
     bouton_fermeture.config(font=("Courier", 14))
     bouton_fermeture.grid(row=0, column=2,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 
-
+    
 
 #---------------------------------------------------------------------------
 def programme_diag():
