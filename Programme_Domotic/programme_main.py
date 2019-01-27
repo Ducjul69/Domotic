@@ -10,7 +10,7 @@ import threading
 from datetime import datetime
 from PIL import *
 import sqlite3
-
+from tkinter import messagebox
 
 from Gestion_heure import*
 from programme_planning import*
@@ -23,6 +23,7 @@ from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
 from programme_IO_adafruit import*
 from programme_graphique_temp import*
+
 
 
 ###########################################
@@ -52,9 +53,31 @@ def MaJ_fenetre_main():
             #mise a jour label heure
             labeltps.configure(text = localdate)
 
-            #mise a jour des modes de marches
+            #mise a jour affichage des modes de marches
             ecriture_etat_chaudiere()
 
+            #changement image suivant etat chaudiere
+            #lecture etat chaudiere
+            #lecture du mode de marche
+            variable_input = "etat_chaudiere_reel"
+            lecture_db(variable_input)
+            etat= lecture_db(variable_input)
+            variable_input = "chaudiere_com_error"
+            lecture_db(variable_input)
+            chaudiere_com_error= lecture_db(variable_input)
+            
+            #modification de l'image
+            if chaudiere_com_error==0:
+                if etat==1:
+                    photo5=PhotoImage(file="chaudiere_on.png")
+                    canvas5.itemconfig(item,image = photo5)
+                if etat==0:   
+                    photo5=PhotoImage(file="chaudiere_off.png")
+                    canvas5.itemconfig(item,image = photo5)
+            else:
+                photo5=PhotoImage(file="chaudiere_error.png")
+                canvas5.itemconfig(item,image = photo5)               
+                    
             #mise a jour des temperatures et hygro
             variable_input = "temperature_exterieur"
             lecture_db(variable_input)
@@ -81,7 +104,9 @@ def MaJ_fenetre_main():
             hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
 
         except:
-            break
+            time.sleep(0.25)
+            #break
+            
 ###########################################
 # bouton allumage chaudiere en mode manu
 def allumage():
@@ -125,6 +150,36 @@ def automatique():
 
             
 
+
+#----------------------------------------------------------
+#GESTION DES OUVERTURES FENETRES
+###########################################
+# affichage du planning
+def planning():    
+    
+    #masquer la fenetre principale
+    fenetre.withdraw()
+    #thread pour affichage planning
+    ouverture_planning()
+    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    t1.start()
+
+###########################################
+# affichage fenetre diagnostic
+def graph_temp():
+    fenetre.withdraw()
+    fenetre_graphique()
+    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    t1.start()
+    
+###########################################
+# affichage fenetre diagnostic
+def diagnostics():
+    fenetre.withdraw()
+    programme_diag()
+    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
+    t1.start()
+
 ###########################################
 # scrutation fin des autres pages
 def scrutation_fermeture_fenetre():
@@ -141,47 +196,13 @@ def scrutation_fermeture_fenetre():
     variable_etat = "0"
     update_db(variable_input, variable_etat)    
 
-
-###########################################
-# affichage du planning
-def planning():    
-    
-    #masquer la fenetre principale
-    fenetre.withdraw()
-    #thread pour affichage planning
-    ouverture_planning()
-    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
-    t1.start()
-    
-    
-
-###########################################
-
-###########################################
-# affichage fenetre diagnostic
-def graph_temp():
-    fenetre.withdraw()
-    fenetre_graphique()
-    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
-    t1.start()
-    
-
+#----------------------------------------------------------    
 
 
 ###########################################
-# affichage fenetre diagnostic
-def diagnostics():
-    fenetre.withdraw()
-    programme_diag()
-    t1 = threading.Thread(target=scrutation_fermeture_fenetre)
-    t1.start()
-    
-
-
-###########################################
-# gestion de l'allumage chaudiere global
+# Affichage du mode de marche
 def ecriture_etat_chaudiere():
-    global photo5, etat_mode
+    global etat_mode
     #lecture du mode de marche
     variable_input = "mode_de_marche"
     lecture_db(variable_input)
@@ -193,23 +214,14 @@ def ecriture_etat_chaudiere():
     heure = lecture_db(variable_input)
 
     if mode_de_marche ==0:
-        #modification de l'image
-        photo5=PhotoImage(file="chaudiere_off.png")
-        canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Aucun mode \n selectionn"+u"\u00E9")
             
     elif mode_de_marche ==1:
-        #modification de l'image
-        photo5=PhotoImage(file="chaudiere_on.png")
-        canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Mode manuel")
             
     elif mode_de_marche ==2:
-        #modification de l'image
-        photo5=PhotoImage(file="chaudiere_on.png")
-        canvas5.itemconfig(item,image = photo5)
         #mise a jour du label
         etat_mode.configure(text= "Mode \n automatique")
             
@@ -219,15 +231,9 @@ def ecriture_etat_chaudiere():
         lecture_db(variable_input)
         etat_chaudiere= lecture_db(variable_input)
         if etat_chaudiere == 1:
-            #modification de l'image
-            photo5=PhotoImage(file="chaudiere_on.png")
-            canvas5.itemconfig(item,image = photo5)
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
         else:
-            #modification de l'image
-            photo5=PhotoImage(file="chaudiere_off.png")
-            canvas5.itemconfig(item,image = photo5)
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
 
@@ -239,6 +245,23 @@ def ecriture_etat_chaudiere():
 tempint =10
 tempext =10
 chemin = os.getcwd()+"/"
+
+#mise à 0 de l'etat chaudiere
+variable_input = "etat_chaudiere"
+variable_etat = 0
+update_db(variable_input, variable_etat)
+#mise à 0 du mode manu
+variable_input = "mode_manu"
+variable_etat = 0
+update_db(variable_input, variable_etat)
+#mise à 0 du mode auto
+variable_input = "mode_auto"
+variable_etat = 0
+update_db(variable_input, variable_etat)
+#mise à 0 du mode de marche
+variable_input = "mode_de_marche"
+variable_etat = 0
+update_db(variable_input, variable_etat)
 
 #fenetre principale
 fenetre = Tk()
@@ -432,7 +455,7 @@ t1.start()
 ############################################
 ############################################
 # demarrage communication avec serveur
-adafruit()
+#adafruit()
 
 ############################################
 ############################################

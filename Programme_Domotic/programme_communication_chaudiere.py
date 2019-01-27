@@ -9,44 +9,52 @@ from programme_outil_db import*
 
 ############################################
 def communication_esp_chaudiere():
-    global etat_chaudiere_old
-    #connection a l esp8266 chaudiere
-    ws = websocket.WebSocket()
-    ws.connect("ws://192.168.1.101/")
-    ws.send(etat_chaudiere_old)
-    result = ws.recv()
-    ws.close()
+    i=0
+    try:
+        #lecture etat de la chaudiere
+        variable_input = "etat_chaudiere"
+        lecture_db(variable_input)
+        etat_chaudiere= lecture_db(variable_input)
+        #connection a l esp8266 chaudiere
+        ws = websocket.WebSocket()
+        ws.connect("ws://192.168.1.101/")
+        ws.send(str(etat_chaudiere))
+        result = ws.recv()
+        ws.close()
+        if result =="recu":
+            if etat_chaudiere ==1:
+                #mise à jour etat reel chaudiere
+                variable_input = "etat_chaudiere_reel"
+                variable_etat = 1
+                update_db(variable_input, variable_etat)
+            if etat_chaudiere ==0:
+                #mise à jour etat reel chaudiere
+                variable_input = "etat_chaudiere_reel"
+                variable_etat = 0
+                update_db(variable_input, variable_etat)
+        #mise à jour error_com
+        variable_input = "chaudiere_com_error"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+        time.sleep(10)
 
+    except:
+        #error com
+        variable_input = "chaudiere_com_error"
+        variable_etat = 1
+        update_db(variable_input, variable_etat)
+        time.sleep(5)
+        print("erreur com chaudiere")
 
 ############################################
 def changement_etat():
-    global etat_chaudiere_old
     while 1:
-        try:
-            #lecture etat de la chaudiere
-            variable_input = "etat_chaudiere"
-            lecture_db(variable_input)
-            etat_chaudiere_new= str(lecture_db(variable_input))
-
-            if etat_chaudiere_old != etat_chaudiere_new:
-                etat_chaudiere_old = etat_chaudiere_new
-                communication_esp_chaudiere()
-        except:
-            messagebox.showinfo("Erreur", "Erreur communication avec chaudiere \n Prévoir un arrêt puis un redémarrage chaudière")
-        time.sleep(1)
-        
+        communication_esp_chaudiere()
+     
 ############################################
+#programme démarrage
+        
 def com_esp_chaudiere():
-    global etat_chaudiere_old
-
-    #etat initial lecture db
-    variable_input = "etat_chaudiere"
-    lecture_db(variable_input)
-    etat_chaudiere_old= str(lecture_db(variable_input))
-
-    #activation de l esp chaudiere suivant l etat old
-    #communication_esp_chaudiere()
-
     #demarrage du thread
     t1= threading.Thread(target=changement_etat)
     t1.start()

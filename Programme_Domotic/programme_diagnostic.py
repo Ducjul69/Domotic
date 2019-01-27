@@ -317,14 +317,18 @@ def fenetre_diagnostic():
     label = Label(visu_int, text="Tentative de reconnexion :", bg = "grey", fg = "white", width=30)
     label.config(font=("Courier", 12))
     label.grid(row=0, column=0,  sticky="nsew")
+     #BP reco chaudiere
+    bouton_diagnostic = Button(visu_int, text="Connexion\n chaudiere", command=com_esp_chaudiere,height = 2,width = 30)
+    bouton_diagnostic.config(font=("Courier", 11))
+    bouton_diagnostic.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
     #BP reco temp int
     bouton_diagnostic = Button(visu_int, text="Connexion\n Température interieure", command=com_esp_temperature,height = 2,width = 30)
     bouton_diagnostic.config(font=("Courier", 11))
-    bouton_diagnostic.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+    bouton_diagnostic.grid(row=2, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
     #BP reco temp ext
     bouton_diagnostic = Button(visu_int, text="Connexion\n Température exterieure", command=com_esp_temperature,height = 2,width = 30)
     bouton_diagnostic.config(font=("Courier", 11))
-    bouton_diagnostic.grid(row=2, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+    bouton_diagnostic.grid(row=3, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
     
     ###########################################
     #zone BP bas
