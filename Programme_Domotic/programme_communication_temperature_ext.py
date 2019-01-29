@@ -47,9 +47,13 @@ def changement_etat():
     while 1:
         try:
             communication_esp_temperature()
-            time.sleep(10)
-        except:
+            #ecriture bd pas de pb sur la com
+            variable_input = "temperature_ext_error"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
             
+            time.sleep(60)
+        except:
             #chargement dans la base
             variable_input = "hygrometrie_exterieur"
             variable_etat = 0
@@ -58,9 +62,11 @@ def changement_etat():
             variable_input = "temperature_exterieur"
             variable_etat = 0
             update_db(variable_input, variable_etat)
-            break
-    t1.atuer =True
-    messagebox.showinfo("Erreur", "Erreur communication temperature exterieure")
+            #ecriture bd pb sur la com
+            variable_input = "temperature_ext_error"
+            variable_etat = 1
+            update_db(variable_input, variable_etat)
+            time.sleep(60)
         
 ############################################
 def com_esp_temperature_ext():

@@ -77,7 +77,7 @@ def MaJ_fenetre_main():
             else:
                 photo5=PhotoImage(file="chaudiere_error.png")
                 canvas5.itemconfig(item,image = photo5)               
-                    
+
             #mise a jour des temperatures et hygro
             variable_input = "temperature_exterieur"
             lecture_db(variable_input)
@@ -90,7 +90,7 @@ def MaJ_fenetre_main():
             temperature_interieur= lecture_db(variable_input)
             #label
             temp_int_label.configure(text = (str(temperature_interieur) +u"\u00B0"+"C"))
-            
+
             variable_input = "hygrometrie_exterieur"
             lecture_db(variable_input)
             hygrometrie_exterieur= lecture_db(variable_input)
@@ -103,6 +103,27 @@ def MaJ_fenetre_main():
             #label
             hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
 
+            #affichage si erreur com temperature interieur
+            variable_input = "temperature_int_error"
+            lecture_db(variable_input)
+            temperature_int_error= lecture_db(variable_input)
+            if temperature_int_error==1:
+                photo4=PhotoImage(file="Hygro_error.png")
+                canvas4.itemconfig(item,image = photo4)
+            if temperature_int_error==0:
+                photo4=PhotoImage(file="Hygro.png")
+                canvas4.itemconfig(item,image = photo4)
+            #affichage si erreur com temperature exterieure
+            variable_input = "temperature_ext_error"
+            lecture_db(variable_input)
+            temperature_ext_error= lecture_db(variable_input)
+            if temperature_ext_error==1:
+                photo2=PhotoImage(file="Hygro_error.png")
+                canvas2.itemconfig(item,image = photo2)
+            if temperature_ext_error==0:
+                photo2=PhotoImage(file="Hygro.png")
+                canvas2.itemconfig(item,image = photo2)
+            
         except:
             time.sleep(0.25)
             #break
@@ -148,7 +169,26 @@ def automatique():
         variable_etat = 1
         update_db(variable_input, variable_etat)
 
-            
+###########################################
+#Bouton motion
+def motion():
+    #lecture de l'ancien etat
+    variable_input = "allumage_motion"
+    lecture_db(variable_input)
+    allumage_motion = lecture_db(variable_input)
+
+    if allumage_motion==0:
+        bouton_motion.config(text = "ON",background ="green")
+        variable_input = "allumage_motion"
+        variable_etat = 1
+        update_db(variable_input, variable_etat)
+
+    if allumage_motion==1:
+        bouton_motion.config(text = "OFF",background ="red")
+        variable_input = "allumage_motion"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+
 
 
 #----------------------------------------------------------
@@ -262,6 +302,10 @@ update_db(variable_input, variable_etat)
 variable_input = "mode_de_marche"
 variable_etat = 0
 update_db(variable_input, variable_etat)
+#mise à 0 du mode motion
+variable_input = "allumage_motion"
+variable_etat = 0
+update_db(variable_input, variable_etat)
 
 #fenetre principale
 fenetre = Tk()
@@ -330,7 +374,7 @@ canvas1 = Canvas(temp_ext,width=photo1.width(), height=photo1.height(),bg = "whi
 canvas1.create_image(40, 70, image=photo1)
 canvas1.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
-temp_ext_label = Label(temp_ext,text="10"+u"\u00B0",bg = "white")
+temp_ext_label = Label(temp_ext,text="10"+u"\u00B0",bg = "white",foreground="blue")
 temp_ext_label.config(font=("Courier", 35))
 temp_ext_label.grid(row=1, column=1, sticky="nsew")
 
@@ -345,7 +389,7 @@ canvas2 = Canvas(hydro_ext,width=photo2.width(), height=130,bg = "white",highlig
 canvas2.create_image(40,60, image=photo2)
 canvas2.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
-hydro_ext_label = Label(hydro_ext,text="100%",bg = "white")
+hydro_ext_label = Label(hydro_ext,text="100%",bg = "white",foreground="blue")
 hydro_ext_label.config(font=("Courier", 35))
 hydro_ext_label.grid(row=1, column=1, sticky="nsew")
 
@@ -360,7 +404,7 @@ canvas = Canvas(temp_int,width=photo.width(), height=photo.height(),bg = "white"
 canvas.create_image(40, 70, image=photo)
 canvas.grid(row=0, column=0,rowspan =2, sticky="nsew")
 #valeur frame
-temp_int_label = Label(temp_int,text="10"+u"\u00B0",bg = "white")
+temp_int_label = Label(temp_int,text="10"+u"\u00B0",bg = "white",foreground="blue")
 temp_int_label.config(font=("Courier", 35))
 temp_int_label.grid(row=1, column=1, sticky="nsew")
 
@@ -375,7 +419,7 @@ canvas4 = Canvas(hydro_int,width=photo4.width(), height=130,bg = "white",highlig
 canvas4.create_image(40,60, image=photo4)
 canvas4.grid(row=0, column=0,rowspan=2, sticky="nsew")
 #valeur frame
-hydro_int_label = Label(hydro_int,text="100%",bg = "white")
+hydro_int_label = Label(hydro_int,text="100%",bg = "white",foreground="blue")
 hydro_int_label.config(font=("Courier", 35))
 hydro_int_label.grid(row=1, column=1, sticky="nsew")
 
@@ -401,9 +445,18 @@ etat_mode.grid(row=2, column=1,  columnspan=1, sticky="nsew")
 
 #6
 #titre frame
-label = Label(etat_chauffage,text="Fonctionnement \n chauffage",bg = "white",width = 18)
+label = Label(etat_chauffage,text="Activation \n détection",bg = "white",width = 18)
 label.config(font=("Courier", 14))
 label.grid(row=0, column=0,  columnspan=1, sticky="nsew")
+#BP allumage de la détection de présence
+bouton_motion = Button(etat_chauffage, text="OFF",background ="red", command=motion,height = 1,width = 15)
+bouton_motion.config(font=("Courier", 15))
+bouton_motion.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+#status
+label = Label(etat_chauffage,text="Statut : Inactive",bg = "white",foreground = "blue",width = 18)
+label.config(font=("Courier", 13))
+label.grid(row=3, column=0,  columnspan=1, sticky="nsew")
+
 
 #frame commandes
 #label de la zone commande
