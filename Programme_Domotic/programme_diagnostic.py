@@ -140,7 +140,7 @@ def start_diagnostic_thread():
     #communication avec temperature exterieur
     try:
         ws = websocket.WebSocket()
-        ws.connect("ws://192.168.1.101/")
+        ws.connect("ws://192.168.1.102/")
         ws.close()
         result3=1
     except:

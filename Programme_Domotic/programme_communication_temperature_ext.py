@@ -10,11 +10,9 @@ from programme_outil_db import*
 
 ############################################
 def communication_esp_temperature_ext():
-    global etat_chaudiere_old
-
     #connection a l esp8266 
     ws = websocket.WebSocket()
-    ws.connect("ws://192.168.1.104/")
+    ws.connect("ws://192.168.1.102/")
     ws.send("0")
     humidite = ws.recv()
     humidite=float(humidite)
@@ -42,16 +40,15 @@ def communication_esp_temperature_ext():
 
 ############################################
 def changement_etat():
-    global etat_chaudiere_old,t1
     i=0
     while 1:
         try:
-            communication_esp_temperature()
+            communication_esp_temperature_ext()
             #ecriture bd pas de pb sur la com
             variable_input = "temperature_ext_error"
             variable_etat = 0
             update_db(variable_input, variable_etat)
-            
+            print("truc")
             time.sleep(60)
         except:
             #chargement dans la base
