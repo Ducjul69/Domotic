@@ -1,5 +1,6 @@
 from programme_outil_db import*
 import threading
+import time
 
 from programme_condition_allumage_planning import*
 
@@ -91,7 +92,7 @@ def conditions():
                 update_db(variable_input, variable_etat)
                 mode_auto_old=0
                 mode_auto_new=0
-                
+                time.sleep(0.25) 
 
                 variable_input = "mode_manu"
                 variable_etat = 0
@@ -121,7 +122,7 @@ def conditions():
             update_db(variable_input, variable_etat)
             mode_auto_old=0
             mode_auto_new=0
-                
+            time.sleep(0.25)    
 
             variable_input = "mode_manu"
             variable_etat = 0

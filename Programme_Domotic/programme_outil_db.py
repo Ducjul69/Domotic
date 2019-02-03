@@ -17,30 +17,20 @@ def lecture_db(variable_input):
 def update_db(variable_input, variable_etat):
 
     chemin_base = os.getcwd()+"/domotic.db"
-    
-    with sqlite3.connect(chemin_base) as co_db:
-        curseur = co_db.cursor()
-        curseur.execute("""SELECT etat FROM variables WHERE var=?""", ('base_verrouillee',))
-        base_verrouille=(curseur.fetchone()[0])
-    co_db.close()
-    
-    if base_verrouille==1:
-        while base_verrouille ==1:
+
+    try:
+        with sqlite3.connect(chemin_base) as co_db:
+            curseur = co_db.cursor()
+            curseur.execute("""UPDATE variables SET etat = ? WHERE var = ?""", (variable_etat,variable_input,))
+        co_db.close()
+
+    except:
+        i=1
+        while i==1:
             with sqlite3.connect(chemin_base) as co_db:
                 curseur = co_db.cursor()
-                curseur.execute("""SELECT etat FROM variables WHERE var=?""", ('base_verrouillee',))
-                base_verrouille=(curseur.fetchone()[0])
+                curseur.execute("""UPDATE variables SET etat = ? WHERE var = ?""", (variable_etat,variable_input,))
+                i=0
             co_db.close()
-        with sqlite3.connect(chemin_base) as co_db:
-            curseur = co_db.cursor()
-            curseur.execute("""UPDATE variables SET etat = 1 WHERE var=?""", ('base_verrouillee',))
-            curseur.execute("""UPDATE variables SET etat = ? WHERE var = ?""", (variable_etat,variable_input,))
-            curseur.execute("""UPDATE variables SET etat = 0 WHERE var=?""", ('base_verrouillee',))
-        co_db.close()
-    else:
-        with sqlite3.connect(chemin_base) as co_db:
-            curseur = co_db.cursor()
-            curseur.execute("""UPDATE variables SET etat = 1 WHERE var=?""", ('base_verrouillee',))
-            curseur.execute("""UPDATE variables SET etat = ? WHERE var = ?""", (variable_etat,variable_input,))
-            curseur.execute("""UPDATE variables SET etat = 0 WHERE var=?""", ('base_verrouillee',))
-        co_db.close()      
+            
+            
