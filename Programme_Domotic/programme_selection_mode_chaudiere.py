@@ -11,7 +11,12 @@ def conditions():
         #mode de marche manu
         variable_input = "mode_manu"
         lecture_db(variable_input)
-        mode_manu_new= lecture_db(variable_input)
+        mode_manu_new = lecture_db(variable_input)
+        #mode de marche manu tempo
+        variable_input = "tempo_manu"
+        lecture_db(variable_input)
+        tempo_manu = lecture_db(variable_input)
+        
         #mode de marche auto
         variable_input = "mode_auto"
         lecture_db(variable_input)
@@ -24,6 +29,7 @@ def conditions():
         variable_input = "mode_de_marche"
         lecture_db(variable_input)
         mode_de_marche_new= lecture_db(variable_input)
+
         
         if mode_manu_new == 0 and mode_auto_new == 0 and mode_planning_new == 0:
             #passage de la chaudiere a 0
@@ -36,7 +42,9 @@ def conditions():
             update_db(variable_input, variable_etat)
             
         
-        if mode_manu_old != mode_manu_new:
+
+        
+        elif mode_manu_old != mode_manu_new and tempo_manu==0 and mode_manu_new !=2:
             if mode_manu_new==1:
                 #passage des autres modes a 0
                 variable_input = "mode_auto"
@@ -55,12 +63,33 @@ def conditions():
                 update_db(variable_input, variable_etat)
 
                 #mise a jour de la variable
-                mode_manu_old =1
-                
+                mode_manu_old =1 
             else:
                 mode_manu_old =0
 
-        if mode_auto_old != mode_auto_new:
+        elif mode_manu_new==2:
+            if mode_manu_new==2:
+                #passage des autres modes a 0
+                variable_input = "mode_auto"
+                variable_etat = 0
+                update_db(variable_input, variable_etat)
+                mode_auto_new=0
+                mode_auto_old=0
+
+                #passage de la chaudiere a 1
+                variable_input = "etat_chaudiere"
+                variable_etat = 1
+                update_db(variable_input, variable_etat)
+                #ecriture mode de marche
+                variable_input = "mode_de_marche"
+                variable_etat = 4
+                update_db(variable_input, variable_etat)
+
+                #mise a jour de la variable
+                mode_manu_old =0 
+        
+
+        elif mode_auto_old != mode_auto_new:
             if mode_auto_new==1:
                 #passage des autres modes a 0
                 variable_input = "mode_manu"
@@ -84,15 +113,14 @@ def conditions():
                 mode_auto_old =0
             
 
-        if mode_planning_old != mode_planning_new:            
+        elif mode_planning_old != mode_planning_new:            
             if mode_planning_new==1:
                 #passage des autres modes a 0
                 variable_input = "mode_auto"
                 variable_etat = 0
                 update_db(variable_input, variable_etat)
                 mode_auto_old=0
-                mode_auto_new=0
-                time.sleep(0.25) 
+                mode_auto_new=0 
 
                 variable_input = "mode_manu"
                 variable_etat = 0
@@ -110,7 +138,7 @@ def conditions():
             else:
                 mode_planning_old =0
                 
-        if mode_planning_new==mode_planning_old and mode_planning_old ==1  and mode_auto_new==0 and mode_manu_new ==0:
+        elif mode_planning_new==mode_planning_old and mode_planning_old ==1  and mode_auto_new==0 and mode_manu_new ==0:
             #ecriture mode de marche
             variable_input = "mode_de_marche"
             variable_etat = 3
@@ -121,8 +149,7 @@ def conditions():
             variable_etat = 0
             update_db(variable_input, variable_etat)
             mode_auto_old=0
-            mode_auto_new=0
-            time.sleep(0.25)    
+            mode_auto_new=0   
 
             variable_input = "mode_manu"
             variable_etat = 0
@@ -133,7 +160,6 @@ def conditions():
             #condition d allumage en mode planning
             condition_allumage_planning ()
             
-        time.sleep(0.5)
             
 
         

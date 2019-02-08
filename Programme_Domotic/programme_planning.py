@@ -447,19 +447,19 @@ def ouverture_planning():
 
 
     #entete
-    entete = Frame(fenetre_planning, bg='grey', height=50)
+    entete = Frame(fenetre_planning, bg='#4584b6', height=50)
     entete.pack(fill = X, pady = 2)
 
     #frame jour
-    jour = Frame(fenetre_planning, bg='grey', height=300)
+    jour = Frame(fenetre_planning, bg='#ffde57', height=300)
     jour.pack(fill = X, pady = 2)
 
     #frame visu
-    visu = Frame(fenetre_planning, bg='grey', height=300)
+    visu = Frame(fenetre_planning, bg='#ffde57', height=300)
     visu.pack(fill = X, pady = 2)
 
     #bas de page
-    bas_page = Frame(fenetre_planning, bg='grey', height=50)
+    bas_page = Frame(fenetre_planning, bg='#4584b6', height=50)
     bas_page.pack(fill = X, pady = 2)
 
     ############################################
@@ -467,7 +467,7 @@ def ouverture_planning():
     ############################################
     # demarrage du thread de l heure
     localdate=1  
-    labeltps1 = Label(entete, text="", bg = "grey",fg ="white")
+    labeltps1 = Label(entete, text="", bg = "#4584b6",fg ="white")
     labeltps1.config(font=("Courier", 20))
     labeltps1.grid(row=0, column=0, sticky="nsew")
     tplanning = threading.Thread(target=planning_comptage)
@@ -476,7 +476,7 @@ def ouverture_planning():
 
     ############################################
     #titre principale de la page
-    label = Label(entete, text="Planning chaudi"+u"\u00E8"+"re", bg = "grey", fg = "white")
+    label = Label(entete, text="Planning chaudi"+u"\u00E8"+"re", bg = "#4584b6", fg = "white")
     label.config(font=("Courier", 20))
     label.grid(row=0, column=1, sticky="nsew", ipadx = 150)
 
@@ -569,7 +569,7 @@ def ouverture_planning():
 
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=1, column=i-1,padx=12,pady=4, sticky="nsew")
         var=var+1
@@ -577,7 +577,7 @@ def ouverture_planning():
     #ligne2
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=2, column=i-1,padx=12,pady=4, sticky="nsew")
         var=var+1
@@ -585,7 +585,7 @@ def ouverture_planning():
     #ligne3
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=3, column=i-1,padx=12,pady=4, sticky="nsew")
         var=var+1
@@ -593,7 +593,7 @@ def ouverture_planning():
     #ligne4
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=4, column=i-1,padx=12,pady=4, sticky="nsew")
         var=var+1
@@ -601,7 +601,7 @@ def ouverture_planning():
     #ligne5
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=5, column=i-1,padx=12,pady=4, sticky="nsew")
         var=var+1
@@ -609,7 +609,7 @@ def ouverture_planning():
     #ligne6
     for i in range (1,5):
         text1= str(var)+"h00 a "+str(var+1)+"h00"
-        c = Checkbutton(visu, text=text1, variable=var_check[var])
+        c = Checkbutton(visu, text=text1, variable=var_check[var], bg='#ffde57')
         c.config(font=("Courier", 14))
         c.grid(row=6, column=i-1,padx=12,pady=4, sticky="nsew")
         

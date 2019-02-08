@@ -18,7 +18,7 @@ def communication_esp_temperature_ext():
 
     i=0
     while True:
-        print( "En écoute...")
+        #ecoute au niveau du serveur
         tcpsock.listen(10)
         (clientsocket, (ip, port)) = tcpsock.accept()
         if i<2:
@@ -35,15 +35,20 @@ def communication_esp_temperature_ext():
                     variable_etat = recu
                     update_db(variable_input, variable_etat)
                 
-                print("variable recue :", recu)
-                print("Client déconnecté...\n")
+                #tempo deco du client
                 time.sleep(1)
                 i=i+1
             except:
-                print("erreur")
+                a=1
         else:
             recu = float(clientsocket.recv(1024))
-            print("tension",recu)
+            tension_pourcent= int((recu *100)/4.2)
+            #sauvegrade sur la base
+            variable_input = "niveau_batterie_tempext"
+            variable_etat = tension_pourcent
+            update_db(variable_input, variable_etat)
+            
+            print("tension",tension_pourcent)
             if recu < 0.5:
                 t2= threading.Thread(target=message_batterie)
                 t2.start()

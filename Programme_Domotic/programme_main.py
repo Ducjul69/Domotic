@@ -23,6 +23,7 @@ from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
 from programme_IO_adafruit import*
 from programme_graphique_temp import*
+from programme_selection_manu import*
 
 
 
@@ -55,6 +56,24 @@ def MaJ_fenetre_main():
 
             #mise a jour affichage des modes de marches
             ecriture_etat_chaudiere()
+            
+            #mise à jour du niveau de batterie de la temperature exterieur
+            #recuperation du niveau sur la base
+            variable_input = "niveau_batterie_tempext"
+            lecture_db(variable_input)
+            niveau_batterie_tempext= lecture_db(variable_input)
+            labelbattempext.configure(text = "Batterie : "+str(niveau_batterie_tempext)+"%")
+            #changement du logo si plus de batterie
+            if niveau_batterie_tempext==0:
+                photo2=PhotoImage(file="Hygro_error.png")
+                canvas2.itemconfig(item,image = photo2)
+                #mise à 0 des valeurs de temp et hygro
+                variable_input = "temperature_exterieur"
+                variable_etat = 0
+                update_db(variable_input, variable_etat)
+                variable_input = "hygrometrie_exterieur"
+                variable_etat = 0
+                update_db(variable_input, variable_etat)
 
             #changement image suivant etat chaudiere
             #lecture etat chaudiere
@@ -112,18 +131,7 @@ def MaJ_fenetre_main():
                 canvas4.itemconfig(item,image = photo4)
             if temperature_int_error==0:
                 photo4=PhotoImage(file="Hygro.png")
-                canvas4.itemconfig(item,image = photo4)
-            #affichage si erreur com temperature exterieure
-            variable_input = "temperature_ext_error"
-            lecture_db(variable_input)
-            temperature_ext_error= lecture_db(variable_input)
-            if temperature_ext_error==1:
-                photo2=PhotoImage(file="Hygro_error.png")
-                canvas2.itemconfig(item,image = photo2)
-            if temperature_ext_error==0:
-                photo2=PhotoImage(file="Hygro.png")
-                canvas2.itemconfig(item,image = photo2)
-            
+                canvas4.itemconfig(item,image = photo4)           
         except:
             time.sleep(0.25)
             #break
@@ -131,22 +139,8 @@ def MaJ_fenetre_main():
 ###########################################
 # bouton allumage chaudiere en mode manu
 def allumage():
-    #lecture de l'ancien etat
-    variable_input = "mode_manu"
-    lecture_db(variable_input)
-    mode_manu = lecture_db(variable_input)
-        
-    if mode_manu == 1:
-        #ecriture sur la db manu =0
-        variable_input = "mode_manu"
-        variable_etat = 0
-        update_db(variable_input, variable_etat)
-    else:
-        #ecriture sur la db manu =1
-        variable_input = "mode_manu"
-        variable_etat = 1
-        update_db(variable_input, variable_etat)
-        
+    fenetre_selection_manuel()
+    
             
                 
 
@@ -157,17 +151,7 @@ def automatique():
     variable_input = "mode_auto"
     lecture_db(variable_input)
     mode_auto = lecture_db(variable_input)
-        
-    if mode_auto == 1:
-        #ecriture sur la db manu =0
-        variable_input = "mode_auto"
-        variable_etat = 0
-        update_db(variable_input, variable_etat)
-    else:
-        #ecriture sur la db manu =1
-        variable_input = "mode_auto"
-        variable_etat = 1
-        update_db(variable_input, variable_etat)
+    programme_auto()
 
 ###########################################
 #Bouton motion
@@ -242,7 +226,8 @@ def scrutation_fermeture_fenetre():
 ###########################################
 # Affichage du mode de marche
 def ecriture_etat_chaudiere():
-    global etat_mode
+    global etat_mode, tempscompteur
+    
     #lecture du mode de marche
     variable_input = "mode_de_marche"
     lecture_db(variable_input)
@@ -256,20 +241,57 @@ def ecriture_etat_chaudiere():
     if mode_de_marche ==0:
         #mise a jour du label
         etat_mode.configure(text= "Aucun mode \n selectionn"+u"\u00E9")
-            
+        #ecriture sur la base
+        variable_input = "start_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+        #mise à 1 du debut compteur
+        variable_input = "debut_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+
+    elif mode_de_marche ==4:
+        #mise a jour du label
+        compteur_manu()
+        
+
     elif mode_de_marche ==1:
         #mise a jour du label
         etat_mode.configure(text= "Mode manuel")
-            
+        #ecriture sur la base
+        variable_input = "start_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+        #mise à 1 du debut compteur
+        variable_input = "debut_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+          
     elif mode_de_marche ==2:
         #mise a jour du label
         etat_mode.configure(text= "Mode \n automatique")
+        #ecriture sur la base
+        variable_input = "start_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+        #mise à 1 du debut compteur
+        variable_input = "debut_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
             
     elif mode_de_marche ==3:
         #lecture de l'etat
         variable_input = "etat_chaudiere"
         lecture_db(variable_input)
         etat_chaudiere= lecture_db(variable_input)
+        #ecriture sur la base
+        variable_input = "start_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
+        #mise à 1 du debut compteur
+        variable_input = "debut_compteur"
+        variable_etat = 0
+        update_db(variable_input, variable_etat)
         if etat_chaudiere == 1:
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
@@ -277,7 +299,68 @@ def ecriture_etat_chaudiere():
             #mise a jour du label
             etat_mode.configure(text= "Plannning \n activ"+u"\u00E9")
 
-        
+
+###########################################
+# Compteur du mode manu temporisée
+def compteur_manu ():
+    global etat_mode
+    #lecture de la tempo sur la base
+    variable_input = "tempo_manu"
+    lecture_db(variable_input)
+    tempo= (lecture_db(variable_input))*3600
+
+    #lecture si demarrage compteur
+    variable_input = "debut_compteur"
+    lecture_db(variable_input)
+    debut = lecture_db(variable_input)
+    if debut==0:
+        start = int(time.time())
+        #ecriture sur la base
+        variable_input = "start_compteur"
+        variable_etat = start
+        update_db(variable_input, variable_etat)
+        #mise à 1 du debut compteur
+        variable_input = "debut_compteur"
+        variable_etat = 1
+        update_db(variable_input, variable_etat)
+    else:
+        #lecture date démarrage
+        variable_input = "start_compteur"
+        lecture_db(variable_input)
+        start_compteur= lecture_db(variable_input)
+
+        actuel= int(time.time())
+        #compteur
+        tempscompteur = (tempo-(actuel - start_compteur))
+        tempscompteurmin = int(tempscompteur/60)
+        tempscompteursec = tempscompteur - (tempscompteurmin*60)
+        #mise a jour du label
+        etat_mode.configure(text= 'Mode manuel: \n '+str(tempscompteurmin)+' : '+str(tempscompteursec))
+
+        if tempscompteur <2:
+            #ecriture sur la base
+            variable_input = "start_compteur"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
+            #mise à 1 du debut compteur
+            variable_input = "debut_compteur"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
+            #mode de marche à 0
+            variable_input = "mode_de_marche"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
+            #mode manu à 0
+            variable_input = "mode_manu"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
+            #eteint la chaudiere
+            variable_input = "etat_chaudiere"
+            variable_etat = 0
+            update_db(variable_input, variable_etat)
+
+
+
 
 #---------------------------------------------------------------------
 #initialisation des variables
@@ -302,6 +385,10 @@ update_db(variable_input, variable_etat)
 variable_input = "mode_de_marche"
 variable_etat = 0
 update_db(variable_input, variable_etat)
+#mise à 0 du mode de marche
+variable_input = "mode_planning"
+variable_etat = 0
+update_db(variable_input, variable_etat)
 #mise à 0 du mode motion
 variable_input = "allumage_motion"
 variable_etat = 0
@@ -319,15 +406,15 @@ y = (430/2) - (440/2)
 fenetre.geometry('%dx%d+%d+%d' % (800, 432, x, y))
 
 #entete
-entete = Frame(fenetre, bg='grey', height=50)
+entete = Frame(fenetre, bg='#4584b6', height=50)
 entete.pack(fill = X, pady = 2)
 
 #frame visu
-visu = Frame(fenetre, bg='grey', height=300)
+visu = Frame(fenetre, bg='#ffde57', height=300)
 visu.pack(fill = X, pady = 2)
 
 #frame inferieure
-frame_inf = Frame(fenetre, bg='grey', height=50)
+frame_inf = Frame(fenetre, bg='#4584b6', height=50)
 frame_inf.pack(fill = X, pady = 2)
 
 #organisation de la frame visu
@@ -353,12 +440,12 @@ action_bp.grid(row = 0, rowspan=2, column=3, sticky="nsew", pady = 5, padx = 5)
 
 # Affichage de l'heure
 localdate=0  
-labeltps = Label(entete, text="00:00:00", bg = "grey",fg ="white")
+labeltps = Label(entete, text="00:00:00", bg = "#4584b6",fg ="white")
 labeltps.config(font=("Courier", 20))
 labeltps.grid(row=0, column=0, sticky="nsew")
 
 #titre principale de la page
-label = Label(entete, text="Gestion de la temp"+u"\u00E9"+"rature", bg = "grey", fg = "white")
+label = Label(entete, text="Gestion de la temp"+u"\u00E9"+"rature", bg = "#4584b6", fg = "white")
 label.config(font=("Courier", 20))
 label.grid(row=0, column=1, sticky="nsew", ipadx = 75)
 
@@ -392,6 +479,10 @@ canvas2.grid(row=0, column=0,rowspan=2, sticky="nsew")
 hydro_ext_label = Label(hydro_ext,text="100%",bg = "white",foreground="blue")
 hydro_ext_label.config(font=("Courier", 35))
 hydro_ext_label.grid(row=1, column=1, sticky="nsew")
+#affichage batterie
+labelbattempext = Label(hydro_ext,text="Batterie : 0%",bg = "white",width = 12)
+labelbattempext.config(font=("Courier", 10))
+labelbattempext.grid(row=2, column=1,  columnspan=1, sticky="nsew")
 
 #3
 #titre frame
@@ -460,19 +551,19 @@ label.grid(row=3, column=0,  columnspan=1, sticky="nsew")
 
 #frame commandes
 #label de la zone commande
-label_command = Label(action_bp,text="Chaudi"+u"\u00E8"+"re",bg = "white",width = 10)
-label_command.config(font=("Courier", 13))
+label_command = Label(action_bp,text="Chaudi"+u"\u00E8"+"re",bg = "white",width = 12)
+label_command.config(font=("Courier", 14))
 label_command.grid(row=0, column=0,  columnspan=1, sticky="nsew")
 #BP allumage de la chaudiere
-bouton_chaudiere = Button(action_bp, text="Forcage \n manuel", command=allumage,height = 3,width = 11)
+bouton_chaudiere = Button(action_bp, text="Forcage \n manuel", command=allumage,height = 3,width = 12)
 bouton_chaudiere.config(font=("Courier", 13))
 bouton_chaudiere.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 #BP planning de la chaudiere
-bouton_chaudiere = Button(action_bp, text="Planning \n chaudi"+u"\u00E8"+"re", command=planning,height = 3,width = 11)
+bouton_chaudiere = Button(action_bp, text="Planning \n chaudi"+u"\u00E8"+"re", command=planning,height = 3,width = 12)
 bouton_chaudiere.config(font=("Courier", 13))
 bouton_chaudiere.grid(row=2, column=0,  rowspan=1, sticky="nsew",pady = 4, padx = 3)
 #BP mode automatique de la chaudiere
-bouton_chaudiere = Button(action_bp, text="Mode \n automatique", command=automatique,height = 3, width = 11)
+bouton_chaudiere = Button(action_bp, text="Mode \n automatique", command=automatique,height = 3, width = 12)
 bouton_chaudiere.config(font=("Courier", 13))
 bouton_chaudiere.grid(row=3, column=0,  rowspan=1, sticky="nsew",pady = 4, padx = 3)
 
