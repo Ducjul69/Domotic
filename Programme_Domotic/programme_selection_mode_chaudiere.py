@@ -89,29 +89,11 @@ def conditions():
                 mode_manu_old =0 
         
 
-        elif mode_auto_old != mode_auto_new:
-            if mode_auto_new==1:
-                #passage des autres modes a 0
-                variable_input = "mode_manu"
-                variable_etat = 0
-                update_db(variable_input, variable_etat)
-                mode_manu_old=0
-                mode_manu_new=0
-
-                #passage de la chaudiere a 1
-                variable_input = "etat_chaudiere"
-                variable_etat = 1
-                update_db(variable_input, variable_etat)
-                #ecriture mode de marche
-                variable_input = "mode_de_marche"
-                variable_etat = 2
-                update_db(variable_input, variable_etat)
-
-                #mise a jour de la variable
-                mode_auto_old =1
-            else:
-                mode_auto_old =0
-            
+        elif mode_auto_new ==1:
+            variable_input = "mode_de_marche"
+            variable_etat = 2
+            update_db(variable_input, variable_etat)
+       
 
         elif mode_planning_old != mode_planning_new:            
             if mode_planning_new==1:

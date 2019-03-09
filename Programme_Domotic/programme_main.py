@@ -14,7 +14,6 @@ from tkinter import messagebox
 
 from Gestion_heure import*
 from programme_planning import*
-from programme_allumage_auto import*
 from programme_communication_chaudiere import*
 from programme_communication_temperature import*
 from programme_communication_temperature_ext import*
@@ -24,6 +23,7 @@ from programme_selection_mode_chaudiere import*
 from programme_IO_adafruit import*
 from programme_graphique_temp import*
 from programme_selection_manu import*
+from programme_fenetre_mode_auto import*
 
 
 
@@ -147,11 +147,8 @@ def allumage():
 ###########################################
 # bouton allumage chaudiere en mode automatique
 def automatique():
-    #lecture de l'ancien etat
-    variable_input = "mode_auto"
-    lecture_db(variable_input)
-    mode_auto = lecture_db(variable_input)
-    programme_auto()
+    #ouverture de la fenetre de parammetrage
+    ouveture_fen_auto_mode ()
 
 ###########################################
 #Bouton motion

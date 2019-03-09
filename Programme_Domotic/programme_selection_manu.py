@@ -92,7 +92,7 @@ def fenetre_selection_manuel():
     else:
         BP_activation_manu ="Arrêter le \n mode manuel"
     
-    #fenetre principale
+    #fenetre secondaire
     fenetre_manu = Toplevel()
     fenetre_manu.title('Pilotage de la maison')
     fenetre_manu.resizable(width=FALSE, height=FALSE)

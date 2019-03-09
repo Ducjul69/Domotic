@@ -9,6 +9,13 @@ def condition_auto():
     variable_input = "mode_auto"
     lecture_db(variable_input)
     mode_auto= lecture_db(variable_input)
+    #récuperation des seuils 
+    variable_input = "seuil_temp_ext"
+    lecture_db(variable_input)
+    seuil_temp_ext= lecture_db(variable_input)
+    variable_input = "seuil_temp_int"
+    lecture_db(variable_input)
+    seuil_temp_int= lecture_db(variable_input)
 
     #condition activer / désactiver
     if mode_auto == 1:        
@@ -39,21 +46,19 @@ def condition_auto():
             lecture_db(variable_input)
             temperature_interieur= lecture_db(variable_input)
 
-            #seuil de fonctionnement
-            seuil_temp_ext = 17
-            seuil_temp_int = 21
-            if temperature_exterieur <= seuil_temp_ext and temperature_interieur <=seuil_temp_int :
-                #mise à ON de la chaudiere
-                variable_input = "etat_chaudiere"
-                variable_etat = 1
-                update_db(variable_input, variable_etat)
-                print("ON")
-            else:
+            if temperature_interieur > (seuil_temp_int-1) :
                 #mise à OFF de la chaudiere
                 variable_input = "etat_chaudiere"
                 variable_etat = 0
                 update_db(variable_input, variable_etat)
-                print("off")
+                
+            elif temperature_interieur <= seuil_temp_int :
+                #mise à ON de la chaudiere
+                variable_input = "etat_chaudiere"
+                variable_etat = 1
+                update_db(variable_input, variable_etat)
+
+            
 
             #lecture new valeur mode auto
             variable_input = "mode_auto"

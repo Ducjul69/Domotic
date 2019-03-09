@@ -48,7 +48,7 @@ def communication_esp_temperature_ext():
             variable_etat = tension_pourcent
             update_db(variable_input, variable_etat)
             
-            print("tension",tension_pourcent)
+            print("tension",recu)
             if recu < 0.5:
                 t2= threading.Thread(target=message_batterie)
                 t2.start()
