@@ -32,6 +32,10 @@ def communication_esp_temperature_ext():
                 else:
                     #chargement dans la base
                     variable_input = "hygrometrie_exterieur"
+                    #ecriture de la variable si conforme
+                    if recu>100:
+                        recu = 0
+                    #envoie de la variable vers la base
                     variable_etat = recu
                     update_db(variable_input, variable_etat)
                 

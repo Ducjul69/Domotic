@@ -20,7 +20,6 @@ from programme_communication_temperature_ext import*
 from programme_diagnostic import*
 from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
-from programme_IO_adafruit import*
 from programme_graphique_temp import*
 from programme_selection_manu import*
 from programme_fenetre_mode_auto import*
@@ -28,15 +27,25 @@ from programme_fenetre_mode_auto import*
 
 
 ###########################################
-# info db
+#liste des pip a installer
+#python -m pip install --upgrade pip
+#pip install Pillow
+#pip install websocket_client
+#pip install requests
+#pip install matplotlib
+###########################################
+
+
+###########################################
+#info db
 #variable_input = "etat_chaudiere"
 #lecture_db(variable_input)
 #etat_chaudiere= lecture_db(variable_input)
-
+#
 #variable_input = "etat_chaudiere"
 #variable_etat = 0
 #update_db(variable_input, variable_etat)
-
+###########################################
 
 
 ###########################################
@@ -46,6 +55,9 @@ def MaJ_fenetre_main():
     global localdate
     while 1:
         try:
+            #tempo d'actualisation
+            time.sleep(0.5)
+            
             #mise a jour pour l'heure
             #comptage(localdate)
             heure =[]
@@ -133,7 +145,7 @@ def MaJ_fenetre_main():
                 photo4=PhotoImage(file="Hygro.png")
                 canvas4.itemconfig(item,image = photo4)           
         except:
-            time.sleep(0.25)
+            time.sleep(0.75)
             #break
             
 ###########################################
@@ -593,10 +605,6 @@ changement_etat_chaudiere()
 # Mise a jour reguliere de la fenetre
 t1 = threading.Thread(target=MaJ_fenetre_main)
 t1.start()
-############################################
-############################################
-# demarrage communication avec serveur
-#adafruit()
 
 ############################################
 ############################################
