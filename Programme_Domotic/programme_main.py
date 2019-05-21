@@ -53,6 +53,10 @@ from programme_fenetre_mode_auto import*
 #variables exterieures toute les secondes  
 def MaJ_fenetre_main():
     global localdate
+    #date et heure pour suivi des erreurs programme
+    maintenant = datetime.now()
+
+    #boucle principale du programme
     while 1:
         try:
             #tempo d'actualisation
@@ -134,6 +138,16 @@ def MaJ_fenetre_main():
             #label
             hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
 
+            #mise à jour du capteur motion
+            variable_input = "detection_motion"
+            lecture_db(variable_input)
+            status_detection= lecture_db(variable_input)
+            #mise à jour du label detection
+            if status_detection == 1:
+                status_motion.configure(text= "Mouvement détecté")
+            else :
+                status_motion.configure(text= "Mouvement non détecté")
+            
             #affichage si erreur com temperature interieur
             variable_input = "temperature_int_error"
             lecture_db(variable_input)
@@ -145,7 +159,9 @@ def MaJ_fenetre_main():
                 photo4=PhotoImage(file="Hygro.png")
                 canvas4.itemconfig(item,image = photo4)           
         except:
-            time.sleep(0.75)
+            #erreur dans la boucle principale
+            print(maintenant, " erreur dans la boucle principale du programme\n")
+            time.sleep(0.5)
             #break
             
 ###########################################
@@ -165,6 +181,7 @@ def automatique():
 ###########################################
 #Bouton motion
 def motion():
+        
     #lecture de l'ancien etat
     variable_input = "allumage_motion"
     lecture_db(variable_input)
@@ -394,9 +411,9 @@ update_db(variable_input, variable_etat)
 variable_input = "mode_de_marche"
 variable_etat = 0
 update_db(variable_input, variable_etat)
-#mise à 0 du mode de marche
+#mise à 1 du mode de marche planning
 variable_input = "mode_planning"
-variable_etat = 0
+variable_etat = 1
 update_db(variable_input, variable_etat)
 #mise à 0 du mode motion
 variable_input = "allumage_motion"
@@ -412,7 +429,7 @@ fenetre.resizable(width=FALSE, height=FALSE)
 # calculate x and y coordinates for the Tk root window
 x = (800/2) - (800/2)
 y = (430/2) - (440/2)
-fenetre.geometry('%dx%d+%d+%d' % (800, 432, x, y))
+fenetre.geometry('%dx%d+%d+%d' % (798, 432, x, y))
 
 #entete
 entete = Frame(fenetre, bg='#4584b6', height=50)
@@ -553,9 +570,9 @@ bouton_motion = Button(etat_chauffage, text="OFF",background ="red", command=mot
 bouton_motion.config(font=("Courier", 15))
 bouton_motion.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
 #status
-label = Label(etat_chauffage,text="Statut : Inactive",bg = "white",foreground = "blue",width = 18)
-label.config(font=("Courier", 13))
-label.grid(row=3, column=0,  columnspan=1, sticky="nsew")
+status_motion = Label(etat_chauffage,text="Statut : Inactive",bg = "white",foreground = "blue",width = 18)
+status_motion.config(font=("Courier", 11))
+status_motion.grid(row=3, column=0,  columnspan=1, sticky="nsew")
 
 
 #frame commandes

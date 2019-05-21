@@ -14,13 +14,15 @@ def message_batterie():
 def communication_esp_temperature_ext():
     tcpsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     tcpsock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    tcpsock.bind(("192.168.1.107",1111))
+    tcpsock.bind(("192.168.1.100",1111))
 
     i=0
     while True:
         #ecoute au niveau du serveur
         tcpsock.listen(10)
         (clientsocket, (ip, port)) = tcpsock.accept()
+        recu = str(clientsocket.recv(1024))
+        print(recu)
         if i<2:
             try:
                 recu = int(clientsocket.recv(1024))
