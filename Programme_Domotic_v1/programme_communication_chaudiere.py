@@ -41,8 +41,8 @@ def communication_esp_chaudiere():
         #reprise après une erreur de com
         if erreur_com==1:
             print("Erreur communication chaudière résolue")
-        #pas d'erreur de com
-        erreur_com=1
+            #pas d'erreur de com
+            erreur_com=0
         #mise en pose de la communication
         time.sleep(10)
         
