@@ -26,12 +26,12 @@ async def reception_raspberry(websocket, path):
     tpsm = maintenant.minute
     tpsm = int(tpsm)
     print(tpsh)
-    if tpsh>= 18 and tpsh<=23 and not tpsm>=15 and not tpsm>=20 or tpsm==15:
+    if tpsh>= 18 and tpsh<=23 or tpsm==15:
         await websocket.send("ok")
-        print("ok")
+        print("Lumière allumée")
     else:
         await websocket.send("nok")
-        print("nok")
+        print("Lumière éteinte")
     
 ############################################
 def com_esp():
@@ -39,7 +39,7 @@ def com_esp():
         loop=asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
-        start_server = websockets.serve(reception_raspberry, '192.168.1.105', 8888)
+        #start_server = websockets.serve(reception_raspberry, '192.168.1.105', 8765)
         print("serveur ok")
         loop.run_until_complete(start_server)
         loop.run_forever()
@@ -48,9 +48,7 @@ def com_esp():
 
 ############################################
 #def com_esp_lumiere():
-    
-
-print("bonjour")    
+        
 t9 = threading.Thread(target=com_esp)
 t9.start()
     

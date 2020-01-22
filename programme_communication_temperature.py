@@ -43,7 +43,7 @@ async def reception_raspberry(websocket, path):
     variable_input = "detection_motion"
     variable_etat = mouvement
     update_db(variable_input, variable_etat)
-    print(mouvement)
+
     #etat com
     etat_com=0
     #sauvegarde sur la base
@@ -53,16 +53,19 @@ async def reception_raspberry(websocket, path):
         
 ############################################
 def com_rasp():
+    loop=asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     try:
-        loop=asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        
         
         start_server = websockets.serve(reception_raspberry, '192.168.1.105', 8765)
-        
-        loop.run_until_complete(start_server)
-        loop.run_forever()
     except:
         i=1
+        print("truc")
+    loop.run_until_complete(start_server)
+    loop.run_forever()
+       
+    
 
 
 ############################################
