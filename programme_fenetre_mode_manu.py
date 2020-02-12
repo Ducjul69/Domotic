@@ -10,7 +10,6 @@ from datetime import datetime
 from programme_outil_db import*
 from programme_communication_chaudiere import*
 from programme_communication_temperature import*
-from programme_communication_temperature_ext import*
 
 
 ############################################

@@ -1,113 +1,67 @@
 #!/usr/bin/env /usr/bin/python
-
-import asyncio
-import websockets
-import time
-import threading
-from tkinter import messagebox
-from datetime import datetime
-
-
+import socket
+import os
 from programme_outil_db import*
+import threading
+from socket import socket, AF_INET, SOCK_STREAM, SOL_SOCKET, SHUT_WR, SO_REUSEADDR
 
 
-        
 
-async def reception_raspberry(websocket, path):
-    global maintenant_serveur
-    #pour le controle d'activité
-    maintenant = datetime.now()
-    maintenant_serveur  = maintenant.minute
- 
-    #reception des infos
-    temperature = await websocket.recv()
-    temperature =(int(float(temperature)))
-    await websocket.send("ok")
-    humidite = await websocket.recv()
-    humidite = (int(float(humidite)))
-    await websocket.send("ok")
-    mouvement = await websocket.recv()
-    await websocket.send("ok")
+class ClientThread(threading.Thread):
 
-    #sauvegarde sur la base
-    variable_input = "temperature_interieur"
-    variable_etat = temperature
-    update_db(variable_input, variable_etat)
+    def __init__(self, ip, port, clientsocket):
 
-    #sauvegarde sur la base
-    variable_input = "hygrometrie_interieur"
-    variable_etat = humidite
-    update_db(variable_input, variable_etat)
-    
-    #sauvegarde sur la base
-    variable_input = "detection_motion"
-    variable_etat = mouvement
-    update_db(variable_input, variable_etat)
+        threading.Thread.__init__(self)
+        self.ip = ip
+        self.port = port
+        self.clientsocket = clientsocket
 
-    #etat com
-    etat_com=0
-    #sauvegarde sur la base
-    variable_input = "temperature_int_error"
-    variable_etat = etat_com
-    update_db(variable_input, variable_etat)
-        
-############################################
-def com_rasp():
-    loop=asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        
-        
-        start_server = websockets.serve(reception_raspberry, '192.168.1.105', 8765)
-    except:
-        i=1
-        print("truc")
-    loop.run_until_complete(start_server)
-    loop.run_forever()
-       
-    
+    def run(self): 
+   
+        print("Connexion de %s %s" % (self.ip, self.port, ))
 
-
-############################################
-def controle_activite ():
-    global maintenant_serveur, etat_com
-    maintenant_serveur = 0
-    while 1:
-        maintenant = datetime.now()
-        tpsh = maintenant.minute
-        if not maintenant_serveur == tpsh :
-            if etat_com==0:
-                print (str(maintenant)+" Erreur communication capteur intérieur\n")
-                #etat com
-                etat_com=1
-                #sauvegarde sur la base
-                variable_input = "temperature_int_error"
-                variable_etat = etat_com
+        response = self.clientsocket.recv(2048)
+        response = response.decode("utf-8")
+        print(response)
+        #cas de la reception temp ext
+        if response[0:7]=="tempext":
+                response = (response[7:len(response)])
+                #verification temp
+                if int(response) < -30 or int(response) > 70:
+                    response = "--"
+                #sauvegarde sur base de donnée
+                variable_input = "temperature_exterieur"
+                variable_etat = response
                 update_db(variable_input, variable_etat)
-        else:
-            if etat_com==1:
-                print("Erreur communication capteur intérieur résolue")
-            #etat com
-            etat_com=0
-            #sauvegarde sur la base
-            variable_input = "temperature_int_error"
-            variable_etat = etat_com
-            update_db(variable_input, variable_etat)
-            
-        time.sleep(60)
+        if response[0:6]=="humext":
+                response = (response[6:len(response)])
+                if int(response) < 0 or int(response) > 100:
+                    response = "--"
+                #sauvegarde sur base de donnée
+                variable_input = "hygrometrie_exterieur"
+                variable_etat = response
+                update_db(variable_input, variable_etat)
+        print("Client déconnecté...")
+
+
+
+############################################
+def communication_esp_temperature():
+        tcpsock = socket(AF_INET, SOCK_STREAM)
+        tcpsock.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+        tcpsock.bind(("",8765))
+
+        while True:
+                tcpsock.listen(10)
+                print( "En écoute...")
+                (clientsocket, (ip, port)) = tcpsock.accept()
+                newthread = ClientThread(ip, port, clientsocket)
+                newthread.start()
 
 ############################################
 def com_esp_temperature():
-    global etat_com
-    #etat com
-    etat_com=0
-    #sauvegarde sur la base
-    variable_input = "temperature_int_error"
-    variable_etat = etat_com
-    update_db(variable_input, variable_etat)
-
-    
-    t1 = threading.Thread(target=com_rasp)
+    time.sleep(5)
+    #demarrage du thread
+    t1= threading.Thread(target=communication_esp_temperature)
     t1.start()
-    #t2 = threading.Thread(target=controle_activite)
-    #t2.start()
+############################################

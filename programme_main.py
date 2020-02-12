@@ -5,6 +5,7 @@
 
 from tkinter import *
 import os
+import sys
 import time
 import threading
 from datetime import datetime
@@ -16,7 +17,6 @@ from Gestion_heure import*
 from programme_fenetre_mode_planning import*
 from programme_communication_chaudiere import*
 from programme_communication_temperature import*
-from programme_communication_temperature_ext import*
 from programme_diagnostic import*
 from programme_outil_db import*
 from programme_selection_mode_chaudiere import*
@@ -24,6 +24,8 @@ from programme_graphique_temp import*
 from programme_fenetre_mode_manu import*
 from programme_fenetre_mode_auto import*
 from programme_communication_Allumagelumiere import*
+from programme_gestion_camera import*
+from programme_serveur_gsm import*
 
 
 
@@ -34,6 +36,7 @@ from programme_communication_Allumagelumiere import*
 #pip install websocket_client
 #pip install requests
 #pip install matplotlib
+#pip install pyserial
 ###########################################
 
 
@@ -73,24 +76,6 @@ def MaJ_fenetre_main():
 
             #mise a jour affichage des modes de marches
             ecriture_etat_chaudiere()
-            
-            #mise à jour du niveau de batterie de la temperature exterieur
-            #recuperation du niveau sur la base
-            variable_input = "niveau_batterie_tempext"
-            lecture_db(variable_input)
-            niveau_batterie_tempext= lecture_db(variable_input)
-            labelbattempext.configure(text = "Batterie : "+str(niveau_batterie_tempext)+"%")
-            #changement du logo si plus de batterie
-            if niveau_batterie_tempext==0:
-                photo2=PhotoImage(file="Images\Hygro_error.png")
-                canvas2.itemconfig(item,image = photo2)
-                #mise à 0 des valeurs de temp et hygro
-                variable_input = "temperature_exterieur"
-                variable_etat = 0
-                update_db(variable_input, variable_etat)
-                variable_input = "hygrometrie_exterieur"
-                variable_etat = 0
-                update_db(variable_input, variable_etat)
 
             #changement image suivant etat chaudiere
             #lecture etat chaudiere
@@ -120,10 +105,14 @@ def MaJ_fenetre_main():
             temperature_exterieur= lecture_db(variable_input)
             #label
             temp_ext_label.configure(text = (str(temperature_exterieur) +u"\u00B0"+"C"))
-            
+
+            #Affichage temperature intérieur
             variable_input = "temperature_interieur"
             lecture_db(variable_input)
             temperature_interieur= lecture_db(variable_input)
+            #vérification de la valeur
+            if (int(temperature_interieur)<-50 or int(temperature_interieur)>-50):
+                temperature_interieur = "--"
             #label
             temp_int_label.configure(text = (str(temperature_interieur) +u"\u00B0"+"C"))
 
@@ -132,10 +121,22 @@ def MaJ_fenetre_main():
             hygrometrie_exterieur= lecture_db(variable_input)
             #label
             hydro_ext_label.configure(text = (str(hygrometrie_exterieur) +" "+u"\u0025"))
-            
+
+            #Affichage de l'hygrometrie interieur
             variable_input = "hygrometrie_interieur"
             lecture_db(variable_input)
             hygrometrie_interieur= lecture_db(variable_input)
+            #vérification de la valeur
+            if (int(hygrometrie_interieur)<-50 or int(hygrometrie_interieur)>-50):
+                hygrometrie_interieur = "--"
+                #image si erreur
+                photo4=PhotoImage(file="Images\Hygro_error.png")
+                canvas4.itemconfig(item,image = photo4)
+            else:
+                #image si pas d'erreur
+                photo4=PhotoImage(file="Images\Hygro.png")
+                canvas4.itemconfig(item,image = photo4)
+                
             #label
             hydro_int_label.configure(text = (str(hygrometrie_interieur) +" "+u"\u0025"))
 
@@ -148,47 +149,20 @@ def MaJ_fenetre_main():
                 status_motion.configure(text= "Mouvement détecté")
             else :
                 status_motion.configure(text= "Mouvement non détecté")
-            
-            #affichage si erreur com capteur interieur
-            #changement valeur de temperature et hydro
-            #variable_input = "temperature_interieur"
-            #variable_etat = "--"
-            #update_db(variable_input, variable_etat)
-            #variable_input = "hygrometrie_interieur"
-            #variable_etat = "--"
-            #update_db(variable_input, variable_etat)
-            
-            variable_input = "temperature_int_error"
-            lecture_db(variable_input)
-            temperature_int_error= lecture_db(variable_input)
-            if temperature_int_error==1:
-                photo4=PhotoImage(file="Images\Hygro_error.png")
-                canvas4.itemconfig(item,image = photo4)
-            if temperature_int_error==0:
-                photo4=PhotoImage(file="Images\Hygro.png")
-                canvas4.itemconfig(item,image = photo4)
-                
+            #!!!!!!          
+            #partie a refaire              
             #affichage si erreur com capteur exterieur
             #changement valeur de temperature et hydro
-            variable_input = "temperature_exterieur"
-            variable_etat = "--"
-            update_db(variable_input, variable_etat)
-            variable_input = "hygrometrie_exterieur"
-            variable_etat = "--"
-            update_db(variable_input, variable_etat)
-            variable_input = "temperature_ext_error"
-            lecture_db(variable_input)
-            temperature_ext_error= lecture_db(variable_input)
-            if temperature_ext_error==1:
+            '''if temperature_ext_error==1:
                 photo2=PhotoImage(file="Images\Hygro_error.png")
                 canvas2.itemconfig(item,image = photo2)
             if temperature_ext_error==0:
                 photo2=PhotoImage(file="Images\Hygro.png")
-                canvas2.itemconfig(item,image = photo2)
+                canvas2.itemconfig(item,image = photo2)'''
         except:
             #erreur dans la boucle principale
             print(maintenant, " Erreur dans la boucle principale du programme\n")
-            time.sleep(0.5)
+            #time.sleep(0.5)
 
 #position de la fenetre
 def clic(event):
@@ -236,6 +210,23 @@ def motion():
         update_db(variable_input, variable_etat)
 
 
+###########################################
+#Bouton vision caméra garage
+def vision_cam_garage():
+    cam_garage_vision()
+###########################################
+#Bouton vision caméra interieur
+def vision_cam_interieur():
+    cam_interieur_vision()
+
+    
+###########################################
+#enregistrement caméra garage
+def vision_cam_int():
+    i=0
+
+
+    
 
 #----------------------------------------------------------
 #GESTION DES OUVERTURES FENETRES
@@ -465,7 +456,7 @@ fenetre.resizable(width=FALSE, height=FALSE)
 # calculate x and y coordinates for the Tk root window
 x = (800/2) - (800/2)
 y = (430/2) - (440/2)
-fenetre.geometry('%dx%d+%d+%d' % (798, 432, x, y))
+fenetre.geometry('%dx%d+%d+%d' % (950, 432, x, y))
 
 #entete
 entete = Frame(fenetre, bg='#4584b6', height=50)
@@ -487,6 +478,7 @@ hydro_int = Frame(visu, bg='white', width=200,height = 150)
 etat_chaudiere = Frame(visu, bg='white', width=200,height = 150)
 etat_chauffage =Frame(visu, bg='white', width=200,height = 150)
 action_bp = Frame(visu, bg='white', width=200,height = 150)
+camera_bp = Frame(visu, bg='white', width=200,height = 150)
 
 temp_ext.grid(row=0, column=0, sticky="nsew", pady = 5, padx = 5)
 hydro_ext.grid(row=0, column=1, sticky="nsew", pady = 5, padx = 5)
@@ -495,6 +487,7 @@ hydro_int.grid(row=1, column=1, sticky="nsew", pady = 5, padx = 5)
 etat_chaudiere.grid(row=0, column=2, sticky="nsew", pady = 5, padx = 5)
 etat_chauffage.grid(row=1, column=2, sticky="nsew", pady = 5, padx = 5)
 action_bp.grid(row = 0, rowspan=2, column=3, sticky="nsew", pady = 5, padx = 5)
+camera_bp.grid(row = 0, rowspan=2, column=4, sticky="nsew", pady = 5, padx = 5)
 
 ############################################
 #mise en place des titres
@@ -632,6 +625,32 @@ bouton_chaudiere.config(font=("Courier", 13))
 bouton_chaudiere.bind("<Button-1>", clic)
 bouton_chaudiere.grid(row=3, column=0,  rowspan=1, sticky="nsew",pady = 4, padx = 3)
 
+#frame caméras
+#label de la zone caméra
+label_zone_cam = Label(camera_bp,text="Caméras", bg= "white", width =12)
+label_zone_cam.config(font=("Courier", 14))
+label_zone_cam.grid(row=0, column=0,  columnspan=1, sticky="nsew")
+#BP visionnage cam extérieur garage
+bouton_cam_garage = Button(camera_bp, text="Visionner \n Garage", command=vision_cam_garage,height = 3,width = 12)
+bouton_cam_garage.config(font=("Courier", 13))
+bouton_cam_garage.bind("<Button-1>", clic)
+bouton_cam_garage.grid(row=1, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+#BP save cam intérieur
+bouton_cam_garage = Button(camera_bp, text="Visionner \n Intérieur", command=vision_cam_interieur,height = 3,width = 12)
+bouton_cam_garage.config(font=("Courier", 13))
+bouton_cam_garage.bind("<Button-1>", clic)
+bouton_cam_garage.grid(row=2, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+#BP save cam poolhouse
+bouton_cam_garage = Button(camera_bp, text="Visionner \n PoolHouse", command=vision_cam_int,height = 3,width = 12)
+bouton_cam_garage.config(font=("Courier", 13))
+bouton_cam_garage.bind("<Button-1>", clic)
+bouton_cam_garage.grid(row=3, column=0,  rowspan=1,  sticky="ns",pady = 4, padx = 3)
+
+
+
+
+
+
 #Frame inferieure
 #BP diagnostic
 bouton_diagnostic = Button(frame_inf, text="Diagnostics", command=diagnostics,height = 2,width = 11)
@@ -649,7 +668,17 @@ bouton_diagnostic.grid(row=1, column=3,  rowspan=1,  sticky="ns",pady = 4, padx 
 
 
 
+###########################################
+#Ouverture automatique du VNC
+os.popen('"C:/Program Files/RealVNC/VNC Server/vncguihelper.exe" vncserver.exe -_fromGui -start -showstatus')
+print("vnc démarré")
+#os.popen("C:/Program Files (x86)/TeamViewer/TeamViewer.exe")
+#print("Teamviewer démarré")
 
+###########################################
+#enregistrement des caméras
+cam_garage_save()
+#cam_interieur_save()
 
 #affichage de l'historique planning
 #prise en compte des modification du planning
@@ -663,8 +692,8 @@ changement_etat_chaudiere()
 # Mise a jour reguliere de la fenetre
 t1 = threading.Thread(target=MaJ_fenetre_main)
 t1.start()
-
 ############################################
+
 ############################################
 # demarrage communication avec chaudiere
 com_esp_chaudiere()
@@ -676,8 +705,8 @@ com_esp_temperature()
 ############################################
 
 ############################################
-# demarrage communication avec temperature int
-com_esp_temperature_ext()
+# demarrage serveur gsm
+serveur_gsm()
 ############################################
 
 ############################################
@@ -688,7 +717,7 @@ fenetre.mainloop()
 
 ############################################
 ############################################
-# demarrage communication avec chaudiere
+#demarrage communication avec chaudiere
 com_esp_lumiere()
 ############################################
 
